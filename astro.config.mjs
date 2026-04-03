@@ -5,8 +5,15 @@ export default defineConfig({
     {
       provider: fontProviders.fontsource(),
       name: 'Reddit Sans Condensed',
-      cssVariable: '--font-reddit',
-      weights: [300, 400, 700, 900],
+      cssVariable: '--font-sans',
+      weights: [400, 700, 900],
+      formats: ['woff2', 'woff'],
+    },
+    {
+      provider: fontProviders.fontsource(),
+      name: 'Reddit Mono',
+      cssVariable: '--font-mono',
+      weights: [400],
       formats: ['woff2', 'woff'],
     },
   ],

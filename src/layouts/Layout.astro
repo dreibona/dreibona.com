@@ -1,7 +1,8 @@
 ---
-import { Font } from "astro:assets";
-import Nav from "../components/Nav.astro";
-import Footer from "../components/Footer.astro";
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <!doctype html>
@@ -12,23 +13,27 @@ import Footer from "../components/Footer.astro";
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <Font cssVariable="--font-reddit" />
+    <Font cssVariable="--font-sans" />
+    <Font cssVariable="--font-mono" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>dreibona</title>
   </head>
+
   <body>
     <header>
       <div class="limiter">
         <Nav />
       </div>
     </header>
+
     <main>
-      <div class="copy limiter">
+      <div class="limiter">
         <slot />
       </div>
     </main>
+
     <footer>
       <div class="limiter">
         <Footer />
@@ -38,173 +43,35 @@ import Footer from "../components/Footer.astro";
 </html>
 
 <style>
-  :root {
-    --fs-h1: clamp(2em, 5vw + 1em, 3.25em);
-    --fs-h2: clamp(1.5em, 3vw + 1em, 2.25em);
-    --fs-logo: clamp(1em, 1.5vw + 1em, 1.5em);
-    --fs-body: clamp(1em, 0.5vw + 1em, 1.125em);
-    --cl-base: oklch(30% 0 0);
-  }
-
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-
-  html {
-    block-size: 100%;
-    -moz-text-size-adjust: none;
-    -webkit-text-size-adjust: none;
-    text-size-adjust: none;
-  }
-
-  body {
-    min-block-size: 100svh;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    display: flex;
-    flex-direction: column;
-    background-color: oklch(from var(--cl-base) 98.5% c h);
-    font-family: var(--font-reddit);
-    font-size: var(--fs-body);
-    font-weight: 400;
-    color: var(--cl-base);
-    line-height: 1.7;
-
-    &:not(dialog) {
-      margin: 0;
-    }
-  }
-
-  h1,
-  h2,
-  p,
-  figure,
-  blockquote,
-  dl,
-  dd {
-    margin-block: 0;
-  }
-
-  h1,
-  h2 {
-    text-wrap: balance;
-    font-weight: 900;
-    letter-spacing: -0.05em;
-  }
-
-  h1 {
-    font-size: var(--fs-h1);
-  }
-
-  h2 {
-    font-size: var(--fs-h2);
-  }
-
-  h1,
-  h2,
-  button,
-  input,
-  label {
-    line-height: 1.1;
-  }
-
-  p {
-    text-wrap: pretty;
-  }
-
-  img,
-  picture,
-  iframe,
-  canvas,
-  svg {
-    max-inline-size: 100%;
-    display: block;
-    height: auto;
-  }
-
-  input,
-  button,
-  textarea,
-  select {
-    font-family: inherit;
-    font-size: inherit;
-  }
-
-  textarea {
-    min-block-size: 2lh;
-  }
-
   header {
-    font-weight: 700;
-    background-color: oklch(from var(--cl-base) 94% c h);
-    padding: 0.5em 0;
-    span {
-      font-size: var(--fs-logo);
-    }
+    background-color: oklch(from var(--cl-base) calc(l + 0.95) c h);
   }
 
   main {
-    flex-grow: 1;
-  }
-
-  footer {
-    font-weight: 700;
-    background-color: oklch(from var(--cl-base) 94% c h);
-    padding: 1rem 0;
-  }
-
-  .limiter {
-    margin-inline: auto;
-    max-width: 70ch;
-    padding-inline: 0.8em;
-  }
-
-  .copy {
     h1,
     h2 {
-      margin: 1em 0 0.5em 0;
+      margin-block: 1em 0.5em;
     }
 
     p,
     ul,
     ol,
     img {
-      margin: 1.2em 0;
-    }
-
-    li {
-      margin: 0.3em 0;
-    }
-
-    ul,
-    ol {
-      padding-left: 1.5em;
+      margin-block: 1.2em;
     }
 
     code {
-      font-size: 0.9em;
-      font-family: var(--font-reddit);
-      font-weight: 300;
-      background-color: oklch(from var(--cl-base) 90% c h);
-      padding: 0.2em;
+      background-color: oklch(from var(--cl-base) calc(l + 0.95) c h);
     }
+  }
 
-    & > :first-child {
-      margin-top: 2rem;
+  footer {
+    background-color: oklch(from var(--cl-base) calc(l + 0.95) c h);
+  }
 
-      @media (width > 690px) {
-        margin-top: 3rem;
-      }
-    }
-
-    & > :last-child {
-      margin-bottom: 2rem;
-
-      @media (width > 690px) {
-        margin-bottom: 3rem;
-      }
-    }
+  .limiter {
+    margin-inline: auto;
+    max-width: 70ch;
+    padding-inline: 0.8em;
   }
 </style>
