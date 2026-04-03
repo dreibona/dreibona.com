@@ -3,18 +3,17 @@ import { defineConfig, fontProviders } from 'astro/config';
 export default defineConfig({
   fonts: [
     {
-      provider: fontProviders.fontsource(),
       name: 'Reddit Sans Condensed',
       cssVariable: '--font-sans',
-      weights: [400, 700, 900],
-      formats: ['woff2', 'woff'],
+      provider: fontProviders.fontsource(),
+      weights: [400, 900],
     },
     {
-      provider: fontProviders.fontsource(),
       name: 'Reddit Mono',
       cssVariable: '--font-mono',
+      provider: fontProviders.fontsource(),
       weights: [400],
-      formats: ['woff2', 'woff'],
+      fallbacks: ['monospace'],
     },
   ],
 });

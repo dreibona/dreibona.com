@@ -13,12 +13,12 @@ import Footer from '../components/Footer.astro';
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <Font cssVariable="--font-sans" />
-    <Font cssVariable="--font-mono" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>dreibona</title>
+    <Font cssVariable="--font-sans" />
+    <Font cssVariable="--font-mono" />
   </head>
 
   <body>
@@ -41,37 +41,3 @@ import Footer from '../components/Footer.astro';
     </footer>
   </body>
 </html>
-
-<style>
-  header {
-    background-color: oklch(from var(--cl-base) calc(l + 0.95) c h);
-  }
-
-  main {
-    h1,
-    h2 {
-      margin-block: 1em 0.5em;
-    }
-
-    p,
-    ul,
-    ol,
-    img {
-      margin-block: 1.2em;
-    }
-
-    code {
-      background-color: oklch(from var(--cl-base) calc(l + 0.95) c h);
-    }
-  }
-
-  footer {
-    background-color: oklch(from var(--cl-base) calc(l + 0.95) c h);
-  }
-
-  .limiter {
-    margin-inline: auto;
-    max-width: 70ch;
-    padding-inline: 0.8em;
-  }
-</style>
