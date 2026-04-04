@@ -1,24 +1,26 @@
 ---
-import { navList } from '../config/config';
+import { nav } from '../config/config';
 const path = Astro.url.pathname;
 ---
 
 <nav>
   <span>
-    <a href="/">db</a>
+    <a href="/" aria-label="home page">db</a>
   </span>
   <ul>
     {
-      navList.map((link) => {
-        const isActive = path === link.href;
+      nav.map((slug) => {
+        const label = slug.page.replaceAll('/', '').toUpperCase();
+        const isActive = path === slug.page;
         return (
           <li>
             <a
-              href={link.href}
+              href={slug.page}
               aria-current={isActive ? 'page' : undefined}
+              aria-label={slug.page + ' page'}
               class="nav-link"
             >
-              {link.label}
+              {label}
             </a>
           </li>
         );

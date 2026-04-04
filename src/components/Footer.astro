@@ -1,5 +1,9 @@
 ---
-
+const { author, year } = Astro.props;
 ---
 
-<p>Footer</p>
+<p>
+  design & code by <a href="#">
+    {author} © {year}
+  </a>
+</p>

@@ -3,20 +3,62 @@ import { Font } from 'astro:assets';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import { meta as config, year } from '../config/config';
+
+interface Props {
+  meta: {
+    title?: string;
+    description?: string;
+    author?: string;
+    image?: string;
+    loc?: string;
+    type?: string;
+    robot?: boolean;
+    site?: string;
+    path?: string;
+  };
+}
+
+const { meta = {} } = Astro.props;
+const {
+  title = meta.title ?? config.title,
+  description = meta.description ?? config.description,
+  author = meta.author ?? config.author,
+  image = meta.image ?? config.image,
+  loc = meta.loc ?? config.loc,
+  type = meta.type ?? config.type,
+  robot = meta.robot ?? config.robot,
+  site = Astro.url.href ?? config.site,
+  path = Astro.url.pathname.split('/').filter(Boolean).pop(),
+} = meta;
+
+const bot = robot ? 'noimageindex' : 'none, noimageindex';
+const slug = path ? path : '';
+const pageTitle = slug ? `${title} / ${slug}` : title;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={loc}>
   <head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
-    <title>dreibona</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={author} />
+    <meta name="robots" content={bot} />
+    <meta property="og:title" content={title} />
+    <meta property="og:type" content={type} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={site} />
+    <meta property="og:image" content={new URL(image, site)} />
+    <meta property="og:site_name" content={title} />
+    <meta property="og:locale" content={loc} />
+    <link rel="canonical" href={site} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <title>{pageTitle}</title>
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
   </head>
@@ -36,7 +78,7 @@ import Footer from '../components/Footer.astro';
 
     <footer>
       <div class="limiter">
-        <Footer />
+        <Footer author={config.author} year={year} />
       </div>
     </footer>
   </body>
