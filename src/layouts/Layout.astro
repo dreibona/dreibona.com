@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 import { meta as config, year } from '../config/config';
 
 interface Props {
-  meta: {
+  meta?: {
     title?: string;
     description?: string;
     author?: string;
@@ -15,26 +15,29 @@ interface Props {
     type?: string;
     robot?: boolean;
     site?: string;
-    path?: string;
   };
 }
 
 const { meta = {} } = Astro.props;
-const {
-  title = meta.title ?? config.title,
-  description = meta.description ?? config.description,
-  author = meta.author ?? config.author,
-  image = meta.image ?? config.image,
-  loc = meta.loc ?? config.loc,
-  type = meta.type ?? config.type,
-  robot = meta.robot ?? config.robot,
-  site = Astro.url.href ?? config.site,
-  path = Astro.url.pathname.split('/').filter(Boolean).pop(),
-} = meta;
-
+const title = meta.title ?? config.title;
+const description = meta.description ?? config.description;
+const author = meta.author ?? config.author;
+const image = meta.image ?? config.image;
+const loc = meta.loc ?? config.loc;
+const type = meta.type ?? config.type;
+const robot = meta.robot ?? config.robot;
 const bot = robot ? 'noimageindex' : 'none, noimageindex';
-const slug = path ? path : '';
-const pageTitle = slug ? `${title} / ${slug}` : title;
+const site = Astro.url.href ?? config.site;
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+
+let pageTitle = config.title;
+if (segments.length === 0) {
+  pageTitle = config.title;
+} else if (segments.length === 1) {
+  pageTitle = `${config.title} - ${segments}`;
+} else {
+  pageTitle = `${title} - ${config.title}`;
+}
 ---
 
 <!doctype html>

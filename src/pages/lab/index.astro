@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { formatDate } from '../../config/config';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+const allPosts: CollectionEntry<'posts'>[] = await getCollection('posts');
+allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<Layout>
+  lab
+  <ul>
+    {
+      allPosts.map((post) => (
+        <li>
+          <a href={`/lab/${post.id}/`}>
+            <h2>{post.data.title}</h2>
+          </a>
+          <p>{post.data.description}</p>
+          <small>Published: {formatDate(post.data.pubDate)}</small>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

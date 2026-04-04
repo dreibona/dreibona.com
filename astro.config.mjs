@@ -1,4 +1,5 @@
 import { defineConfig, fontProviders } from 'astro/config';
+import mdx from '@astrojs/mdx';
 
 export default defineConfig({
   fonts: [
@@ -16,4 +17,6 @@ export default defineConfig({
       fallbacks: ['monospace'],
     },
   ],
+
+  integrations: [mdx()],
 });
