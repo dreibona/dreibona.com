@@ -1,6 +1,11 @@
 ---
-import { nav } from '../config/config';
+import type { Config } from '../config/config';
+const { nav } = Astro.props;
 const path = Astro.url.pathname;
+
+interface Props {
+  nav: Config['nav'];
+}
 ---
 
 <nav>
@@ -9,16 +14,15 @@ const path = Astro.url.pathname;
   </span>
   <ul>
     {
-      nav.map((slug) => {
-        const label = slug.page.replaceAll('/', '').toUpperCase();
-        const isActive = path === slug.page;
+      nav.map(({ page }) => {
+        const label = page.replaceAll('/', '').toUpperCase();
+        const isActive = path === page;
         return (
           <li>
             <a
-              href={slug.page}
+              href={page}
+              class:list={['nav-link', { active: isActive }]}
               aria-current={isActive ? 'page' : undefined}
-              aria-label={slug.page + ' page'}
-              class="nav-link"
             >
               {label}
             </a>

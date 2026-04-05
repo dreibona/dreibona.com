@@ -3,41 +3,29 @@ import { Font } from 'astro:assets';
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import { meta as config, year } from '../config/config';
+import { config, getMeta } from '../config/config';
+import type { PageMeta } from '../config/config';
 
 interface Props {
-  meta?: {
-    title?: string;
-    description?: string;
-    author?: string;
-    image?: string;
-    loc?: string;
-    type?: string;
-    robot?: boolean;
-    site?: string;
-  };
+  meta?: PageMeta;
+  nav?: typeof config.nav;
 }
 
-const { meta = {} } = Astro.props;
-const title = meta.title ?? config.title;
-const description = meta.description ?? config.description;
-const author = meta.author ?? config.author;
-const image = meta.image ?? config.image;
-const loc = meta.loc ?? config.loc;
-const type = meta.type ?? config.type;
-const robot = meta.robot ?? config.robot;
-const bot = robot ? 'noimageindex' : 'none, noimageindex';
-const site = Astro.url.href ?? config.site;
-const segments = Astro.url.pathname.split('/').filter(Boolean);
+const { meta: pageMeta, nav = config.nav } = Astro.props;
 
-let pageTitle = config.title;
-if (segments.length === 0) {
-  pageTitle = config.title;
-} else if (segments.length === 1) {
-  pageTitle = `${config.title} - ${segments}`;
-} else {
-  pageTitle = `${title} - ${config.title}`;
-}
+const finalMeta = getMeta(pageMeta, Astro.url);
+
+const {
+  pageTitle,
+  description,
+  author,
+  image,
+  baseSite,
+  loc,
+  type,
+  robot,
+  currentUrl,
+} = finalMeta;
 ---
 
 <!doctype html>
@@ -46,43 +34,34 @@ if (segments.length === 0) {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, viewport-fit=cover" />
     <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+
     <meta name="description" content={description} />
     <meta name="author" content={author} />
-    <meta name="robots" content={bot} />
-    <meta property="og:title" content={title} />
+    <meta name="robots" content={robot} />
+    <link rel="canonical" href={currentUrl} />
+
     <meta property="og:type" content={type} />
+    <meta property="og:url" content={currentUrl} />
+    <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={site} />
-    <meta property="og:image" content={new URL(image, site)} />
-    <meta property="og:site_name" content={title} />
-    <meta property="og:locale" content={loc} />
-    <link rel="canonical" href={site} />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:image" content={new URL(image.url, baseSite)} />
+    <meta property="og:image:alt" content={image.alt} />
+    <meta property="og:site_name" content={config.meta.title} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL(image.url, baseSite)} />
+
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <title>{pageTitle}</title>
     <Font cssVariable="--font-sans" />
     <Font cssVariable="--font-mono" />
   </head>
 
   <body>
-    <header>
-      <div class="limiter">
-        <Nav />
-      </div>
-    </header>
-
-    <main>
-      <div class="limiter">
-        <slot />
-      </div>
-    </main>
-
+    <header><div class="limiter"><Nav nav={nav} /></div></header>
+    <main><div class="limiter"><slot /></div></main>
     <footer>
-      <div class="limiter">
-        <Footer author={config.author} year={year} />
-      </div>
+      <div class="limiter"><Footer author={author} year={config.year} /></div>
     </footer>
   </body>
 </html>

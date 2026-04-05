@@ -1,5 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const meta = {
+  type: 'profile',
+  robot: false,
+};
 ---
 
-<Layout> about </Layout>
+<Layout meta={meta}> about </Layout>

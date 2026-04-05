@@ -1,11 +1,18 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { formatDate } from '../../config/config';
+import { formatDate, getMeta } from '../../config/config';
 import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
 
-const allPosts: CollectionEntry<'posts'>[] = await getCollection('posts');
-allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const rawPosts = await getCollection('posts');
+const sortedPosts = rawPosts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+const allPosts = sortedPosts.map((post) => ({
+  id: post.id,
+  pubDate: formatDate(post.data.pubDate),
+  ...getMeta(post.data, Astro.url),
+}));
 ---
 
 <Layout>
@@ -15,10 +22,11 @@ allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
       allPosts.map((post) => (
         <li>
           <a href={`/lab/${post.id}/`}>
-            <h2>{post.data.title}</h2>
+            <h2>{post.title}</h2>
           </a>
-          <p>{post.data.description}</p>
-          <small>Published: {formatDate(post.data.pubDate)}</small>
+          <p>{post.description}</p>
+          <p>Published: {post.pubDate}</p>
+          <img src={post.image.url} alt={post.image.alt} />
         </li>
       ))
     }
