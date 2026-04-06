@@ -9,7 +9,7 @@ export const formatDate = (date: Date) => {
 };
 const date = formatDate(now);
 // --- Interfaces --- //
-export interface PageMeta {
+export interface PostMeta {
   title?: string;
   description?: string;
   author?: string;
@@ -18,7 +18,7 @@ export interface PageMeta {
   robot?: boolean;
 }
 
-export interface FinalMeta {
+export interface HeadMeta {
   title: string;
   pageTitle: string;
   description: string;
@@ -53,7 +53,7 @@ export const config = {
   date,
 };
 // --- Fallback Function --- //
-export const getMeta = (pageMeta: PageMeta = {}, url: URL): FinalMeta => {
+export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
   const { meta: cfg } = config;
   const { pathname, href } = url;
   // Robots
@@ -91,10 +91,9 @@ export const getMeta = (pageMeta: PageMeta = {}, url: URL): FinalMeta => {
   } else if (pageMeta.title && pageMeta.title !== cfg.title) {
     pageTitle = `${cfg.title} — ${pageMeta.title}`; // Title Config — Manual Title
   } else if (segments.length > 0) {
-    const navPage = segments[segments.length - 1]; // Title Config — Meta Nav Page [line: 55]
+    const navPage = segments[segments.length - 1]; // Title Config — Meta Nav Page [line: 51]
     pageTitle = `${cfg.title} — ${navPage}`;
   }
-
   return {
     title,
     pageTitle,

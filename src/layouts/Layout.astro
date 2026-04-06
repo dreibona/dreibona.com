@@ -1,19 +1,19 @@
 ---
 import { Font } from 'astro:assets';
-import '../styles/global.css';
-import Nav from '../components/Nav.astro';
-import Footer from '../components/Footer.astro';
-import { config, getMeta } from '../config/config';
-import type { PageMeta } from '../config/config';
+import '@/styles/global.css';
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import { config, getMeta } from '@/config/config';
+import type { PostMeta } from '@/config/config';
 
 interface Props {
-  meta?: PageMeta;
+  meta?: PostMeta;
   nav?: typeof config.nav;
 }
 
 const { meta: pageMeta, nav = config.nav } = Astro.props;
 
-const finalMeta = getMeta(pageMeta, Astro.url);
+const headMeta = getMeta(pageMeta, Astro.url);
 
 const {
   pageTitle,
@@ -25,7 +25,7 @@ const {
   type,
   robot,
   currentUrl,
-} = finalMeta;
+} = headMeta;
 ---
 
 <!doctype html>
@@ -40,6 +40,12 @@ const {
     <meta name="author" content={author} />
     <meta name="robots" content={robot} />
     <link rel="canonical" href={currentUrl} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={config.meta.title}
+      href={`${Astro.site}rss.xml`}
+    />
 
     <meta property="og:type" content={type} />
     <meta property="og:url" content={currentUrl} />

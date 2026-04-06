@@ -1,13 +1,15 @@
 ## Commands
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`                 | Starts local dev server at `localhost:4321`      |
-| `bun astro build`         | Build production site to `./dist/`               |
-| `bun preview`             | Preview your build locally, before deploying     |
-| `bun astro ...`           | Run CLI commands like `astro add`, `astro check` |
-| `bun astro --help`        | Get help using the Astro CLI                     |
+| Command                | Action                                          |
+| :--------------------- | :---------------------------------------------- |
+| `bun install`          | Installs dependencies                           |
+| `bun run dev`          | Starts local dev server at `localhost:4321`     |
+| `bun run build`        | Build production site to `./dist/`              |
+| `bun run preview`      | Preview your build locally, before deploying    |
+| `bun run sync`         | Generates TypeScript types for your Lab content |
+| `bun run check`        | Validates types and checks your code for errors |
+| `bun run clean`        | Resets the project (removes cache/node_modules) |
+| `bun run astro ...`    | Run CLI commands                                |
 
 ## License
 
