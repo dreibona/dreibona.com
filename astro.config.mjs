@@ -9,7 +9,7 @@ export default defineConfig({
       name: "Reddit Sans Condensed",
       cssVariable: "--font-sans",
       provider: fontProviders.fontsource(),
-      weights: [400, 900],
+      weights: [400, 700],
     },
     {
       name: "Reddit Mono",

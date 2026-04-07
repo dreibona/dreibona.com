@@ -1,10 +1,10 @@
 ---
 import { Font } from 'astro:assets';
-import '@/styles/global.css';
-import Nav from '@/components/Nav.astro';
-import Footer from '@/components/Footer.astro';
-import { config, getMeta } from '@/config/config';
-import type { PostMeta } from '@/config/config';
+import '@styles/global.css';
+import Nav from '@components/Nav.astro';
+import Footer from '@components/Footer.astro';
+import { config, getMeta } from '@config/config';
+import type { PostMeta } from '@config/config';
 
 interface Props {
   meta?: PostMeta;
