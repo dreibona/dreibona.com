@@ -31,43 +31,43 @@ const {
 <!doctype html>
 <html lang={loc}>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, viewport-fit=cover" />
-    <meta name="generator" content={Astro.generator} />
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, viewport-fit=cover' />
+    <meta name='generator' content={Astro.generator} />
     <title>{pageTitle}</title>
 
-    <meta name="description" content={description} />
-    <meta name="author" content={author} />
-    <meta name="robots" content={robot} />
-    <link rel="canonical" href={currentUrl} />
+    <meta name='description' content={description} />
+    <meta name='author' content={author} />
+    <meta name='robots' content={robot} />
+    <link rel='canonical' href={currentUrl} />
     <link
-      rel="alternate"
-      type="application/rss+xml"
+      rel='alternate'
+      type='application/rss+xml'
       title={config.meta.title}
       href={`${Astro.site}rss.xml`}
     />
 
-    <meta property="og:type" content={type} />
-    <meta property="og:url" content={currentUrl} />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL(image.url, baseSite)} />
-    <meta property="og:image:alt" content={image.alt} />
-    <meta property="og:site_name" content={config.meta.title} />
+    <meta property='og:type' content={type} />
+    <meta property='og:url' content={currentUrl} />
+    <meta property='og:title' content={pageTitle} />
+    <meta property='og:description' content={description} />
+    <meta property='og:image' content={new URL(image.url, baseSite)} />
+    <meta property='og:image:alt' content={image.alt} />
+    <meta property='og:site_name' content={config.meta.title} />
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content={new URL(image.url, baseSite)} />
+    <meta name='twitter:card' content='summary_large_image' />
+    <meta name='twitter:image' content={new URL(image.url, baseSite)} />
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <Font cssVariable="--font-sans" />
-    <Font cssVariable="--font-mono" />
+    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <Font cssVariable='--font-sans' />
+    <Font cssVariable='--font-mono' />
   </head>
 
   <body>
-    <header><div class="limiter"><Nav nav={nav} /></div></header>
-    <main><div class="limiter"><slot /></div></main>
+    <header><div class='limiter'><Nav nav={nav} /></div></header>
+    <main><div class='limiter'><slot /></div></main>
     <footer>
-      <div class="limiter"><Footer author={author} year={config.year} /></div>
+      <div class='limiter'><Footer author={author} year={config.year} /></div>
     </footer>
   </body>
 </html>

@@ -7,16 +7,16 @@
       "@layouts/*": ["./src/layouts/*"],
       "@config/*": ["./src/config/*"],
       "@styles/*": ["./src/styles/*"],
-      "@content/*": ["./src/content/*"],
+      "@content/*": ["./src/content/*"]
     },
     "jsx": "preserve",
-    "jsxImportSource": "astro",
+    "jsxImportSource": "astro"
   },
   "plugins": [
     {
-      "name": "@astrojs/ts-plugin",
-    },
+      "name": "@astrojs/ts-plugin"
+    }
   ],
   "include": ["src/**/*", ".astro/types.d.ts"],
-  "exclude": ["node_modules", "dist", ".vscode"],
+  "exclude": ["node_modules", "dist", ".vscode"]
 }
