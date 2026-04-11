@@ -1,6 +1,7 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
+import rehypeSlug from 'rehype-slug';
 
 export default defineConfig({
   site: 'https://dreibona.com',
@@ -20,7 +21,9 @@ export default defineConfig({
     },
   ],
   integrations: [
-    mdx(),
+    mdx({
+      rehypePlugins: [rehypeSlug],
+    }),
     sitemap({
       lastmod: new Date(),
     }),

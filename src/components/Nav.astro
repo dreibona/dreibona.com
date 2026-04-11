@@ -33,3 +33,56 @@ interface Props {
     }
   </ul>
 </nav>
+
+<style>
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    background-color: var(--color-blue);
+    border-block-end: var(--border-size) solid var(--color-black);
+    padding-inline-start: var(--space-md);
+  }
+
+  span {
+    display: flex;
+  }
+
+  span a {
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-sm);
+    font-weight: 700;
+  }
+
+  ul {
+    display: flex;
+    align-items: stretch;
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+  }
+
+  li:last-child {
+    border-inline-start: var(--border-size) solid var(--color-black);
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding-inline: var(--space-md);
+    padding-block: var(--space-sm);
+    font-size: 0.875em;
+    font-weight: 700;
+    transition: background-color var(--transition-fast);
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    background-color: var(--color-black);
+    color: var(--color-white);
+  }
+</style>

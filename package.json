@@ -11,7 +11,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro sync && astro check",
-    "clean": "rm -rf dist .astro node_modules bun.lockb && bun install",
+    "clean": "rm -rf dist .astro node_modules bun.lock && bun install",
     "astro": "astro",
     "format": "prettier . --write"
   },
