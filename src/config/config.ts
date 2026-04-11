@@ -1,3 +1,6 @@
+import type { ImageMetadata } from 'astro';
+import cover from '../assets/cover.jpg';
+
 // --- Dates --- //
 const now = new Date();
 const year = now.getFullYear();
@@ -13,7 +16,8 @@ export interface PostMeta {
   title?: string;
   description?: string;
   author?: string;
-  image?: string | { url: string; alt: string };
+  image?: ImageMetadata;
+  imageAlt?: string;
   type?: string;
   robot?: boolean;
 }
@@ -23,10 +27,8 @@ export interface HeadMeta {
   pageTitle: string;
   description: string;
   author: string;
-  image: {
-    url: string;
-    alt: string;
-  };
+  image: { url: string; alt: string };
+  imageAlt?: string;
   baseSite: string;
   loc: string;
   type: string;
@@ -40,7 +42,7 @@ export const config = {
     description: 'description config',
     author: 'author config',
     image: {
-      url: '/config.jpg',
+      url: cover.src,
       alt: 'alt config',
     },
     baseSite: 'https://dreibona.com/',
@@ -62,22 +64,13 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
   // Images
   const processImg = (): { url: string; alt: string } => {
     const img = pageMeta.image;
+    const alt = pageMeta.imageAlt || pageMeta.title || cfg.image.alt;
+
     if (!img) return cfg.image;
-    if (typeof img === 'string') {
-      return {
-        url: img,
-        alt: pageMeta.title || cfg.title,
-      };
-    }
-    const pagelAlt =
-      img.alt && img.alt.trim() !== ''
-        ? img.alt
-        : pageMeta.title && pageMeta.title.trim() !== ''
-          ? pageMeta.title
-          : cfg.image.alt;
+
     return {
-      url: img.url || cfg.image.url,
-      alt: pagelAlt,
+      url: img.src,
+      alt,
     };
   };
   // Titles
