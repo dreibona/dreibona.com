@@ -57,8 +57,7 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
   const { meta: cfg } = config;
   const { pathname, href } = url;
   // Robots
-  const robotEnabled =
-    pageMeta.robot !== undefined ? pageMeta.robot : cfg.robot;
+  const robotEnabled = pageMeta.robot !== undefined ? pageMeta.robot : cfg.robot;
   const robotString = robotEnabled ? 'index, follow, noimageindex' : 'none';
   // Images
   const processImg = (): { url: string; alt: string } => {
@@ -70,7 +69,7 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
         alt: pageMeta.title || cfg.title,
       };
     }
-    const finalAlt =
+    const pagelAlt =
       img.alt && img.alt.trim() !== ''
         ? img.alt
         : pageMeta.title && pageMeta.title.trim() !== ''
@@ -78,7 +77,7 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
           : cfg.image.alt;
     return {
       url: img.url || cfg.image.url,
-      alt: finalAlt,
+      alt: pagelAlt,
     };
   };
   // Titles

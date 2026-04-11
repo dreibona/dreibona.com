@@ -15,17 +15,7 @@ const { meta: pageMeta, nav = config.nav } = Astro.props;
 
 const headMeta = getMeta(pageMeta, Astro.url);
 
-const {
-  pageTitle,
-  description,
-  author,
-  image,
-  baseSite,
-  loc,
-  type,
-  robot,
-  currentUrl,
-} = headMeta;
+const { pageTitle, description, author, image, baseSite, loc, type, robot, currentUrl } = headMeta;
 ---
 
 <!doctype html>
