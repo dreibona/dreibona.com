@@ -16,7 +16,8 @@
   --color-white: oklch(from var(--color-black) calc(l + 0.995) c h);
   --color-primary: oklch(from var(--color-black) calc(l + 0.6) c h);
   /* Borders */
-  --border-size: clamp(5px, 0.3vw, 6px);
+  --border-sm: clamp(2px, 0.3vw, 3px);
+  --border-md: clamp(4px, 1vw, 10px);
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
@@ -50,7 +51,7 @@ body {
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  border: var(--border-size) solid var(--color-black);
+  border: var(--border-md) solid var(--color-black);
 }
 /* --- Typography --- */
 h1,
