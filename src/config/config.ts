@@ -3,11 +3,11 @@ import cover from '../assets/cover.jpg';
 
 // --- Dates --- //
 const now = new Date();
-const year = now.getFullYear();
+const year = now.getUTCFullYear();
 export const formatDate = (date: Date) => {
-  const d = date.getDate().toString().padStart(2, '0');
-  const m = (date.getMonth() + 1).toString().padStart(2, '0');
-  const y = date.getFullYear();
+  const d = date.getUTCDate().toString().padStart(2, '0');
+  const m = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+  const y = date.getUTCFullYear();
   return `${d}/${m}/${y}`;
 };
 const date = formatDate(now);
