@@ -65,9 +65,7 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
   const processImg = (): { url: string; alt: string } => {
     const img = pageMeta.image;
     const alt = pageMeta.imageAlt || pageMeta.title || cfg.image.alt;
-
     if (!img) return cfg.image;
-
     return {
       url: img.src,
       alt,
@@ -83,7 +81,7 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
   } else if (pageMeta.title && pageMeta.title !== cfg.title) {
     pageTitle = `${cfg.title} — ${pageMeta.title}`; // Title Config — Manual Title
   } else if (segments.length > 0) {
-    const navPage = segments[segments.length - 1]; // Title Config — Meta Nav Page [line: 51]
+    const navPage = segments[segments.length - 1]; // Title Config — Meta Nav Page
     pageTitle = `${cfg.title} — ${navPage}`;
   }
   return {

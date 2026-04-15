@@ -47,7 +47,7 @@ body {
   display: grid;
   grid-template-rows: auto 1fr auto;
   color: var(--color-black);
-  background-color: var(--color-primary);
+  background-color: var(--color-white);
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
