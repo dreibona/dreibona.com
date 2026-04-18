@@ -26,7 +26,7 @@ export const GET: APIRoute = async () => {
   const baseUrl = siteConfig.url;
 
   // Dynamic Path Resolution: Extracts the Lab path and label from config to avoid hardcoding.
-  const labNav = siteConfig.nav.find((n) => n.href.includes('/lab'));
+  const labNav = siteConfig.nav.links.find((n) => n.href.includes('/lab'));
   const labLabel = labNav?.label ?? 'Lab';
   const labPath = labNav?.href.endsWith('/') ? labNav.href.slice(0, -1) : (labNav?.href ?? '/lab');
 
@@ -38,7 +38,8 @@ export const GET: APIRoute = async () => {
   content += `URL: ${baseUrl}\n\n`;
 
   content += `## Navigation\n\n`;
-  siteConfig.nav.forEach((navItem) => {
+  content += `- [${siteConfig.nav.home.label}](${baseUrl}${siteConfig.nav.home.href})\n`;
+  siteConfig.nav.links.forEach((navItem) => {
     content += `- [${navItem.label}](${baseUrl}${navItem.href})\n`;
   });
 

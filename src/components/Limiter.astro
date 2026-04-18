@@ -1,0 +1,31 @@
+---
+/**
+ * Limiter Component
+ * Encapsulates the site's max-width and margin constraints.
+ * Ensures consistent alignment across all pages.
+ */
+---
+
+<div class='limiter'>
+  <slot />
+</div>
+
+<style>
+  .limiter {
+    max-inline-size: var(--max-width, 65ch);
+    margin-inline: auto;
+    padding-inline: var(--space-sm);
+  }
+
+  :global(main) .limiter {
+    padding-block: var(--space-lg);
+  }
+
+  :global(footer) .limiter {
+    padding-block: var(--space-md);
+  }
+
+  :global(nav) .limiter {
+    padding-block: 0;
+  }
+</style>

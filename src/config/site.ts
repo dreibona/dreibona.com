@@ -24,11 +24,14 @@ export const siteConfig = {
 
   // Navigation
   // Defines the primary site structure rendered by navigation and discovery components.
-  nav: [
-    { label: 'Lab', href: '/lab/' },
-    { label: 'About', href: '/about/' },
-    { label: 'Now', href: '/now/' },
-  ],
+  nav: {
+    home: { label: 'db', href: '/' },
+    links: [
+      { label: 'Lab', href: '/lab/' },
+      { label: 'About', href: '/about/' },
+      { label: 'Now', href: '/now/' },
+    ],
+  },
 
   // Global SEO Control
   // Site-wide indexing toggle. 'true' enables discovery; 'false' injects 'noindex, nofollow'.

@@ -5,51 +5,59 @@
  * site configuration and highlights the active route.
  */
 import type { SiteConfig } from '@config/site';
+import Limiter from '@components/Limiter.astro';
+
+interface Props {
+  nav: SiteConfig['nav'];
+}
 
 const { nav } = Astro.props;
+const { home, links } = nav;
 /**
  * Path Detection:
  * Used to determine the 'active' state of navigation links by comparing
  * the current URL path with the link's destination.
  */
 const path = Astro.url.pathname;
-
-interface Props {
-  nav: SiteConfig['nav'];
-}
 ---
 
 <nav data-nosnippet>
-  <span>
-    <a href='/' aria-label='home page'>db</a>
-  </span>
-  <ul>
-    {
-      nav.map(({ label, href }) => {
-        const isActive = path === href;
-        return (
-          <li>
-            <a
-              href={href}
-              class:list={['nav-link', { active: isActive }]}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {label.toUpperCase()}
-            </a>
-          </li>
-        );
-      })
-    }
-  </ul>
+  <Limiter>
+    <div class='nav-container'>
+      <span>
+        <a href={home.href} aria-label='home page'>{home.label}</a>
+      </span>
+      <ul>
+        {
+          links.map(({ label, href }) => {
+            const isActive = path === href;
+            return (
+              <li>
+                <a
+                  href={href}
+                  class:list={['nav-link', { active: isActive }]}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {label.toUpperCase()}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </Limiter>
 </nav>
 
 <style>
   nav {
+    background-color: var(--color-primary);
+  }
+
+  .nav-container {
     display: flex;
     justify-content: space-between;
     align-items: stretch;
-    background-color: var(--color-primary);
-    padding-inline-start: var(--space-md);
   }
 
   span {

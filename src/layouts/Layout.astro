@@ -3,6 +3,8 @@ import { Font } from 'astro:assets';
 import '@styles/global.css';
 import Nav from '@components/Nav.astro';
 import Footer from '@components/Footer.astro';
+import SEO from '@components/SEO.astro';
+import Limiter from '@components/Limiter.astro';
 import { siteConfig } from '@config/site';
 import { getMeta, getSchema } from '@config/seo';
 import type { PostMeta } from '@config/seo';
@@ -21,85 +23,18 @@ const { meta: pageMeta, nav = siteConfig.nav } = Astro.props;
  */
 const headMeta = getMeta(pageMeta, Astro.url);
 const schemaMarkup = getSchema(headMeta);
-
-const {
-  pageTitle,
-  description,
-  author,
-  image,
-  baseSite,
-  loc,
-  type,
-  robot,
-  currentUrl,
-  publishDate,
-  modifiedDate,
-} = headMeta;
+const author = headMeta.author;
 ---
 
 <!doctype html>
-<html lang={loc}>
+<html lang={headMeta.loc}>
   <head>
-    <meta charset='utf-8' />
-    <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover' />
-
-    <title>{pageTitle}</title>
-
     {
       /* Font Optimization: Uses Astro's Font component to download and inject CSS with font-display: swap. */
     }
     <Font cssVariable='--font-sans' />
     <Font cssVariable='--font-mono' />
-
-    <meta name='color-scheme' content='light dark' />
-    <meta name='theme-color' content='#ffffff' />
-
-    <meta name='description' content={description} />
-    <meta name='author' content={author} />
-    <meta name='robots' content={robot} />
-    <link rel='canonical' href={currentUrl} />
-
-    <link
-      rel='alternate'
-      type='application/rss+xml'
-      title={siteConfig.title}
-      href={`${Astro.site}rss.xml`}
-    />
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-    <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
-
-    <meta property='og:type' content={type} />
-    <meta property='og:url' content={currentUrl} />
-    <meta property='og:title' content={pageTitle} />
-    <meta property='og:description' content={description} />
-    <meta property='og:image' content={new URL(image.url, baseSite)} />
-    <meta property='og:image:alt' content={image.alt} />
-    <meta property='og:image:width' content='1200' />
-    <meta property='og:image:height' content='630' />
-    <meta property='og:site_name' content={siteConfig.name} />
-    <meta property='og:locale' content={loc} />
-
-    {
-      type === 'article' && publishDate && (
-        <meta property='article:published_time' content={publishDate} />
-      )
-    }
-    {
-      type === 'article' && modifiedDate && (
-        <meta property='article:modified_time' content={modifiedDate} />
-      )
-    }
-
-    {
-      /* OpenGraph & Twitter Cards: Provides rich social media previews using absolute image URLs. */
-    }
-    <meta name='twitter:card' content='summary_large_image' />
-    <meta name='twitter:title' content={pageTitle} />
-    <meta name='twitter:description' content={description} />
-    <meta name='twitter:image' content={new URL(image.url, baseSite)} />
-    <meta name='twitter:image:alt' content={image.alt} />
-
-    <script is:inline type='application/ld+json' set:html={schemaMarkup} />
+    <SEO headMeta={headMeta} schemaMarkup={schemaMarkup} />
   </head>
 
   <body>
@@ -112,9 +47,9 @@ const {
     */
     }
     <header data-nosnippet><div><Nav nav={nav} /></div></header>
-    <main id='main-content'><div class='limiter'><slot /></div></main>
+    <main id='main-content'><Limiter><slot /></Limiter></main>
     <footer data-nosnippet>
-      <div class='limiter'><Footer author={author} year={new Date().getFullYear()} /></div>
+      <Limiter><Footer author={author} year={new Date().getFullYear()} /></Limiter>
     </footer>
   </body>
 </html>
