@@ -3,38 +3,66 @@ import { Font } from 'astro:assets';
 import '@styles/global.css';
 import Nav from '@components/Nav.astro';
 import Footer from '@components/Footer.astro';
-import { config, getMeta } from '@config/config';
-import type { PostMeta } from '@config/config';
+import { siteConfig } from '@config/site';
+import { getMeta, getSchema } from '@config/seo';
+import type { PostMeta } from '@config/seo';
 
 interface Props {
   meta?: PostMeta;
-  nav?: typeof config.nav;
+  nav?: typeof siteConfig.nav;
 }
 
-const { meta: pageMeta, nav = config.nav } = Astro.props;
+const { meta: pageMeta, nav = siteConfig.nav } = Astro.props;
 
+/**
+ * SEO Resolution:
+ * Orchestrates the merge between global site settings and page-specific overrides.
+ * Generates the unified 'headMeta' object and semantic JSON-LD schema.
+ */
 const headMeta = getMeta(pageMeta, Astro.url);
+const schemaMarkup = getSchema(headMeta);
 
-const { pageTitle, description, author, image, baseSite, loc, type, robot, currentUrl } = headMeta;
+const {
+  pageTitle,
+  description,
+  author,
+  image,
+  baseSite,
+  loc,
+  type,
+  robot,
+  currentUrl,
+  publishDate,
+  modifiedDate,
+} = headMeta;
 ---
 
 <!doctype html>
 <html lang={loc}>
   <head>
     <meta charset='utf-8' />
-    <meta name='viewport' content='width=device-width, viewport-fit=cover' />
-    <meta name='generator' content={Astro.generator} />
+    <meta name='viewport' content='width=device-width, initial-scale=1, viewport-fit=cover' />
+
     <title>{pageTitle}</title>
+
+    {
+      /* Font Optimization: Uses Astro's Font component to download and inject CSS with font-display: swap. */
+    }
+    <Font cssVariable='--font-sans' />
+    <Font cssVariable='--font-mono' />
+
+    <meta name='color-scheme' content='light dark' />
+    <meta name='theme-color' content='#ffffff' />
 
     <meta name='description' content={description} />
     <meta name='author' content={author} />
     <meta name='robots' content={robot} />
-    <meta name='theme-color' content='#ffffff' />
     <link rel='canonical' href={currentUrl} />
+
     <link
       rel='alternate'
       type='application/rss+xml'
-      title={config.meta.title}
+      title={siteConfig.title}
       href={`${Astro.site}rss.xml`}
     />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
@@ -48,23 +76,45 @@ const { pageTitle, description, author, image, baseSite, loc, type, robot, curre
     <meta property='og:image:alt' content={image.alt} />
     <meta property='og:image:width' content='1200' />
     <meta property='og:image:height' content='630' />
-    <meta property='og:site_name' content={config.meta.title} />
+    <meta property='og:site_name' content={siteConfig.name} />
     <meta property='og:locale' content={loc} />
 
+    {
+      type === 'article' && publishDate && (
+        <meta property='article:published_time' content={publishDate} />
+      )
+    }
+    {
+      type === 'article' && modifiedDate && (
+        <meta property='article:modified_time' content={modifiedDate} />
+      )
+    }
+
+    {
+      /* OpenGraph & Twitter Cards: Provides rich social media previews using absolute image URLs. */
+    }
     <meta name='twitter:card' content='summary_large_image' />
     <meta name='twitter:title' content={pageTitle} />
     <meta name='twitter:description' content={description} />
     <meta name='twitter:image' content={new URL(image.url, baseSite)} />
+    <meta name='twitter:image:alt' content={image.alt} />
 
-    <Font cssVariable='--font-sans' />
-    <Font cssVariable='--font-mono' />
+    <script is:inline type='application/ld+json' set:html={schemaMarkup} />
   </head>
 
   <body>
-    <header><div><Nav nav={nav} /></div></header>
-    <main><div class='limiter'><slot /></div></main>
-    <footer>
-      <div class='limiter'><Footer author={author} year={config.year} /></div>
+    <a href='#main-content' class='skip-link'>Skip to content</a>
+    {
+      /*
+        GEO Optimization (Generative Engine Optimization):
+        The 'data-nosnippet' attribute instructs search engines and AI agents to ignore
+        navigational/footer boilerplate, focusing context extraction purely on the <main> content.
+    */
+    }
+    <header data-nosnippet><div><Nav nav={nav} /></div></header>
+    <main id='main-content'><div class='limiter'><slot /></div></main>
+    <footer data-nosnippet>
+      <div class='limiter'><Footer author={author} year={new Date().getFullYear()} /></div>
     </footer>
   </body>
 </html>

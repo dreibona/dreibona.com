@@ -1,0 +1,86 @@
+---
+/**
+ * PostLayout: The dedicated layout for individual blog posts.
+ * It wraps the generic Layout and adds article-specific UI elements like
+ * publication date, author name, reading time, and tags.
+ */
+import Layout from '@layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import { getMeta } from '@config/seo';
+import { formatDate } from '@/utils/date';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  meta: CollectionEntry<'posts'>['data'];
+  readingTime?: string;
+}
+
+const { meta, readingTime } = Astro.props;
+
+/**
+ * Metadata Resolution:
+ * Re-uses the SEO engine to resolve the final title and author for the UI,
+ * ensuring consistency between meta tags and on-page content.
+ */
+const { title, author } = getMeta(meta, Astro.url);
+const date = formatDate(meta.publishDate);
+---
+
+{/* Injects the article data into the global Layout for SEO and Schema purposes */}
+<Layout meta={meta}>
+  <article>
+    <header>
+      <h1>{title}</h1>
+      <p>
+        {author} &mdash; <time datetime={new Date(meta.publishDate).toISOString()}>{date}</time>
+        {readingTime && <span> &mdash; {readingTime}</span>}
+      </p>
+      {
+        /* Tag Discovery: Renders a list of linked tags to improve internal site navigation. */
+        meta.tags && meta.tags.length > 0 && (
+          <ul class='tags'>
+            {meta.tags.map((tag: string) => (
+              <li>
+                <a href={`/lab/tags/${tag}/`}>#{tag}</a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      {
+        /*
+          Hero Image Optimization:
+          Uses loading="eager" because the hero image is likely the LCP (Largest Contentful Paint) element.
+        */
+        meta.image && (
+          <Image src={meta.image} alt={meta.imageAlt || title} loading='eager' decoding='async' />
+        )
+      }
+    </header>
+
+    <div class='content'>
+      <slot />
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    list-style: none;
+    padding: 0;
+    margin-block-start: var(--space-sm);
+  }
+
+  .tags a {
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    color: var(--color-primary);
+  }
+
+  .tags a:hover {
+    text-decoration: underline;
+  }
+</style>

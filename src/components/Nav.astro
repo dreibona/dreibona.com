@@ -1,31 +1,40 @@
 ---
-import type { Config } from '@config/config';
+/**
+ * Nav Component
+ * Renders the primary navigation bar. It dynamically generates links based on the
+ * site configuration and highlights the active route.
+ */
+import type { SiteConfig } from '@config/site';
 
 const { nav } = Astro.props;
+/**
+ * Path Detection:
+ * Used to determine the 'active' state of navigation links by comparing
+ * the current URL path with the link's destination.
+ */
 const path = Astro.url.pathname;
 
 interface Props {
-  nav: Config['nav'];
+  nav: SiteConfig['nav'];
 }
 ---
 
-<nav>
+<nav data-nosnippet>
   <span>
     <a href='/' aria-label='home page'>db</a>
   </span>
   <ul>
     {
-      nav.map(({ page }) => {
-        const label = page.replaceAll('/', '').toUpperCase();
-        const isActive = path === page;
+      nav.map(({ label, href }) => {
+        const isActive = path === href;
         return (
           <li>
             <a
-              href={page}
+              href={href}
               class:list={['nav-link', { active: isActive }]}
               aria-current={isActive ? 'page' : undefined}
             >
-              {label}
+              {label.toUpperCase()}
             </a>
           </li>
         );
@@ -40,7 +49,6 @@ interface Props {
     justify-content: space-between;
     align-items: stretch;
     background-color: var(--color-primary);
-    border-block-end: var(--border-sm) solid var(--color-black);
     padding-inline-start: var(--space-md);
   }
 
@@ -51,6 +59,7 @@ interface Props {
   span a {
     display: flex;
     align-items: center;
+    min-block-size: var(--space-lg);
     padding-block: var(--space-sm);
     font-weight: 700;
   }
@@ -66,16 +75,13 @@ interface Props {
     display: flex;
   }
 
-  li:last-child {
-    border-inline-start: var(--border-sm) solid var(--color-black);
-  }
-
   .nav-link {
     display: flex;
     align-items: center;
+    min-block-size: var(--space-lg);
     padding-inline: var(--space-md);
     padding-block: var(--space-sm);
-    font-size: 0.875em;
+    font-size: var(--text-sm);
     font-weight: 700;
     transition: background-color var(--transition-fast);
   }

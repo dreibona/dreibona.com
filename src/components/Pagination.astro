@@ -1,0 +1,156 @@
+---
+/**
+ * Pagination Component
+ * Renders semantic navigation for paginated collections (e.g., Lab or Tag indexes).
+ */
+interface Props {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+
+const { currentPage, totalPages, baseUrl } = Astro.props;
+
+// Normalizes the base path to ensure compatibility with 'trailingSlash: always'.
+const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+
+/**
+ * URL Construction Logic
+ * Maps page 1 to the root index and subsequent pages to /[page]/ folders to maintain SEO consistency.
+ */
+const getPageUrl = (page: number) => {
+  if (page === 1) return `${normalizedBaseUrl}/`;
+  return `${normalizedBaseUrl}/${page}/`;
+};
+
+// Computes component state and generates the page range for iteration.
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+const hasPrevious = currentPage > 1;
+const hasNext = currentPage < totalPages;
+---
+
+{
+  /* Conditional Rendering: Prevents rendering empty navigation containers for single-page results. */
+}
+{
+  totalPages > 1 && (
+    <nav class='pagination' aria-label='Pagination'>
+      <ul>
+        <li>
+          <a
+            href={hasPrevious ? getPageUrl(currentPage - 1) : '#'}
+            class:list={['page-link prev', { disabled: !hasPrevious }]}
+            aria-disabled={!hasPrevious}
+            aria-label='Previous Page'
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2.5'
+              stroke-linecap='round'
+              stroke-linejoin='round'
+            >
+              <path d='m15 18-6-6 6-6' />
+            </svg>
+          </a>
+        </li>
+
+        {pages.map((page) => {
+          const isCurrent = page === currentPage;
+          return (
+            <li>
+              <a
+                href={getPageUrl(page)}
+                class:list={['page-link', { active: isCurrent }]}
+                aria-current={isCurrent ? 'page' : undefined}
+                aria-label={`Go to page ${page}`}
+              >
+                {page}
+              </a>
+            </li>
+          );
+        })}
+
+        <li>
+          <a
+            href={hasNext ? getPageUrl(currentPage + 1) : '#'}
+            class:list={['page-link next', { disabled: !hasNext }]}
+            aria-disabled={!hasNext}
+            aria-label='Next Page'
+          >
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2.5'
+              stroke-linecap='round'
+              stroke-linejoin='round'
+            >
+              <path d='m9 18 6-6-6-6' />
+            </svg>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    margin-block: var(--space-xl);
+    display: flex;
+    justify-content: center;
+  }
+
+  ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: var(--space-xs);
+    align-items: center;
+  }
+
+  .page-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-inline-size: calc(var(--space-lg) / 1.2);
+    min-block-size: calc(var(--space-lg) / 1.2);
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 700;
+
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast);
+  }
+
+  .page-link:hover:not(.disabled):not(.active) {
+    background-color: var(--color-primary);
+  }
+
+  .page-link.active {
+    background-color: var(--color-black);
+    color: var(--color-white);
+    cursor: default;
+  }
+
+  .page-link.disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .prev svg,
+  .next svg {
+    display: block;
+  }
+</style>
