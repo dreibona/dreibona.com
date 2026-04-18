@@ -1,54 +1,44 @@
 ---
+/* Custom 404 error page for non-existent routes */
 import Layout from '@layouts/Layout.astro';
 import type { PostMeta } from '@config/seo';
 
-/**
- * 404 Error Page
- * Custom error page for non-existent routes.
- * Uses global CSS tokens for consistent sizing and semantic HTML for LLMs.
- */
-
-// We explicitly set robot: false to ensure search engines never index the 404 page.
 const meta: PostMeta = {
   title: '404 — Page Not Found',
   description: 'The page you are looking for does not exist or has been moved.',
-  robot: false,
+  robot: false /* Prevents search engines from indexing the 404 page */,
 };
 ---
 
 <Layout meta={meta}>
-  <div class='error-container limiter'>
+  <div class='error'>
     <h1>404</h1>
-    <p>Page Not Found</p>
+    <p class='subtitle'>Page Not Found</p>
     <p class='description'>The page you are looking for doesn't exist or has been moved.</p>
     <a href='/' class='back-link'>&larr; Return to Home</a>
   </div>
 </Layout>
 
 <style>
-  .error-container {
+  .error {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    justify-content: center;
     padding-block: var(--space-xl);
   }
 
   h1 {
-    font-size: var(--text-xl);
     line-height: 1;
     margin-block-end: var(--space-sm);
   }
 
-  p {
+  .subtitle {
     font-size: var(--text-md);
-    margin-block-end: var(--space-xs);
     font-weight: 700;
+    margin-block-end: var(--space-xs);
   }
 
   .description {
-    font-size: var(--text-base);
-    font-weight: 400;
     margin-block-end: var(--space-lg);
   }
 
@@ -58,13 +48,12 @@ const meta: PostMeta = {
     padding-block: var(--space-sm);
     background-color: var(--color-black);
     color: var(--color-white);
-    text-decoration: none;
     font-weight: 700;
     font-size: var(--text-sm);
     transition: opacity var(--transition-fast);
-  }
 
-  .back-link:hover {
-    opacity: 0.8;
+    &:hover {
+      opacity: 0.8;
+    }
   }
 </style>

@@ -1,9 +1,5 @@
 ---
-/**
- * Nav Component
- * Renders the primary navigation bar. It dynamically generates links based on the
- * site configuration and highlights the active route.
- */
+/* Main navigation component for the site header */
 import type { SiteConfig } from '@config/site';
 import Limiter from '@components/Limiter.astro';
 
@@ -13,23 +9,19 @@ interface Props {
 
 const { nav } = Astro.props;
 const { home, links } = nav;
-/**
- * Path Detection:
- * Used to determine the 'active' state of navigation links by comparing
- * the current URL path with the link's destination.
- */
 const path = Astro.url.pathname;
 ---
 
-<nav data-nosnippet>
+<nav>
   <Limiter>
     <div class='nav-container'>
       <span>
-        <a href={home.href} aria-label='home page'>{home.label}</a>
+        <a href={home.href} aria-label='Home'>{home.label}</a>
       </span>
-      <ul>
+      <ul role='list'>
         {
           links.map(({ label, href }) => {
+            /* Highlighting the current page in the navigation menu */
             const isActive = path === href;
             return (
               <li>
@@ -50,10 +42,6 @@ const path = Astro.url.pathname;
 </nav>
 
 <style>
-  nav {
-    background-color: var(--color-primary);
-  }
-
   .nav-container {
     display: flex;
     justify-content: space-between;
@@ -62,25 +50,23 @@ const path = Astro.url.pathname;
 
   span {
     display: flex;
-  }
 
-  span a {
-    display: flex;
-    align-items: center;
-    min-block-size: var(--space-lg);
-    padding-block: var(--space-sm);
-    font-weight: 700;
+    & a {
+      display: flex;
+      align-items: center;
+      min-block-size: var(--space-lg);
+      padding-block: var(--space-sm);
+      font-weight: 700;
+    }
   }
 
   ul {
     display: flex;
     align-items: stretch;
-    list-style: none;
-    padding: 0;
-  }
 
-  li {
-    display: flex;
+    & li {
+      display: flex;
+    }
   }
 
   .nav-link {
@@ -92,11 +78,11 @@ const path = Astro.url.pathname;
     font-size: var(--text-sm);
     font-weight: 700;
     transition: background-color var(--transition-fast);
-  }
 
-  .nav-link:hover,
-  .nav-link.active {
-    background-color: var(--color-black);
-    color: var(--color-white);
+    &:hover,
+    &.active {
+      background-color: var(--color-black);
+      color: var(--color-white);
+    }
   }
 </style>

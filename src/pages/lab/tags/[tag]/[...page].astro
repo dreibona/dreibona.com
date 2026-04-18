@@ -1,90 +1,53 @@
 ---
+/* Paginated list of posts filtered by a specific tag */
 import Layout from '@layouts/Layout.astro';
-import { formatDate } from '@/utils/date';
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
-import type { Page } from 'astro';
+import PostCard from '@components/PostCard.astro';
 import Pagination from '@components/Pagination.astro';
+import { getAllTags, getPostsByTag } from '@/utils/posts';
+import type { Page } from 'astro';
+import type { Post } from '@/utils/posts';
 
-/**
- * Dynamic Routing & Pagination:
- * Generates paginated routes for every unique tag found in the published content collection.
- */
 export async function getStaticPaths({ paginate }: any) {
-  const allPosts = await getCollection('posts');
+  const tags = await getAllTags();
 
-  // Privacy Filter: Ensures drafts and 'noindex' (robot: false) posts are excluded from public tag lists.
-  const visiblePosts = allPosts.filter(
-    (post: CollectionEntry<'posts'>) => !post.data.draft && post.data.robot !== false,
-  );
-
-  // Discovery: Extracts a flat array of unique tags from all visible posts.
-  const uniqueTags = [
-    ...new Set(visiblePosts.map((post: CollectionEntry<'posts'>) => post.data.tags || []).flat()),
-  ];
-
-  // Path Generation: Maps each tag to a set of paginated routes.
-  return uniqueTags.flatMap((tag) => {
-    const filteredPosts = visiblePosts.filter((post: CollectionEntry<'posts'>) =>
-      post.data.tags?.includes(tag),
-    );
-
-    // Chronological Sort: Ensures newest content appears first within the tag index.
-    const sortedPosts = filteredPosts.sort(
-      (a: CollectionEntry<'posts'>, b: CollectionEntry<'posts'>) =>
-        b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
-    );
-
-    return paginate(sortedPosts, {
-      params: { tag },
-      pageSize: 10,
-    });
-  });
+  return (
+    await Promise.all(
+      tags.map(async (tag) => {
+        const posts = await getPostsByTag(tag);
+        return paginate(posts, { params: { tag }, pageSize: 10 });
+      }),
+    )
+  ).flat();
 }
 
 interface Props {
-  page: Page<CollectionEntry<'posts'>>;
+  page: Page<Post>;
 }
 
 const { tag } = Astro.params;
 const { page } = Astro.props;
-const { data: posts } = page;
 
-/**
- * Dynamic SEO:
- * Injects the current tag and page number into the title to prevent duplicate title issues across pages.
- */
+/* Page-specific metadata for the selected tag and pagination state */
 const pageMeta = {
-  title: `Posts tagged "${tag}" ${page.currentPage > 1 ? `— Page ${page.currentPage}` : ''}`,
-  description: `Browse all articles tagged with ${tag}.`,
+  title: `Posts with tag "${tag}"${page.currentPage > 1 ? ` — Page ${page.currentPage}` : ''}`,
+  description: `All articles tagged with ${tag}.`,
 };
 ---
 
 <Layout meta={pageMeta}>
-  <div class='tag-header'>
+  <header class='tag-header'>
     <h1>Tag: <span>#{tag}</span></h1>
-    <p>Found {page.total} {page.total === 1 ? 'post' : 'posts'}</p>
+    <p>{page.total} {page.total === 1 ? 'post' : 'posts'}</p>
     <a href='/lab/' class='back-link'>&larr; Back to Lab</a>
-  </div>
+  </header>
 
-  <ul class='post-list'>
+  <ul class='post-list' role='list'>
     {
-      posts.map((post) => {
-        const date = formatDate(post.data.publishDate);
-        return (
-          <li>
-            <article>
-              <a href={`/lab/${post.id}/`}>
-                <h2>{post.data.title}</h2>
-              </a>
-              <p>{post.data.description}</p>
-              <p>
-                Published: <time datetime={post.data.publishDate.toISOString()}>{date}</time>
-              </p>
-            </article>
-          </li>
-        );
-      })
+      page.data.map((post) => (
+        <li>
+          <PostCard post={post} />
+        </li>
+      ))
     }
   </ul>
 
@@ -98,11 +61,17 @@ const pageMeta = {
 <style>
   .tag-header {
     margin-block-end: var(--space-xl);
-  }
 
-  .tag-header h1 span {
-    color: var(--color-primary);
-    font-family: var(--font-mono);
+    & h1 span {
+      color: var(--color-primary);
+      font-family: var(--font-mono);
+    }
+
+    & p {
+      margin-block-start: var(--space-xs);
+      font-size: var(--text-sm);
+      opacity: 0.7;
+    }
   }
 
   .back-link {
@@ -111,10 +80,10 @@ const pageMeta = {
     font-size: var(--text-sm);
     font-weight: 700;
     transition: opacity var(--transition-fast);
-  }
 
-  .back-link:hover {
-    opacity: 0.7;
+    &:hover {
+      opacity: 0.7;
+    }
   }
 
   .post-list {
@@ -123,13 +92,5 @@ const pageMeta = {
     display: flex;
     flex-direction: column;
     gap: var(--space-xl);
-  }
-
-  article h2 {
-    margin-block-end: var(--space-xs);
-  }
-
-  article p {
-    margin-block-end: var(--space-sm);
   }
 </style>

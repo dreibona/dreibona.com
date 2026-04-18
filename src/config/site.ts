@@ -1,29 +1,22 @@
-/**
- * Global Site Configuration
- * Serves as the central source of truth for the site's identity and behavior.
- * Consumed by the SEO engine, RSS generation, robots/LLM endpoints, and UI components.
- */
+/* Global site configuration and constants */
+
+/* Main configuration object for the site */
 export const siteConfig = {
-  // Basic Info
-  // Used for global metadata, JSON-LD identity, and automated text endpoints.
+  /* Brand and ownership information */
   name: 'dreibona',
   title: 'dreibona',
   description: 'dreibona.',
   author: 'dreibona',
 
-  // URLs & Localization
-  // Required for absolute URL generation in Sitemaps, OpenGraph, and RSS feeds.
+  /* Base URL for link generation and localization settings */
   url: 'https://dreibona.com',
-  // Defines the HTML lang attribute and configures native Intl.DateTimeFormat localization.
   locale: 'en-GB',
 
-  // SEO & Social
-  // Global fallback assets used when page-specific metadata is missing.
+  /* Default assets for SEO and social sharing */
   defaultImage: '/assets/cover.jpg',
   defaultImageAlt: 'dreibona',
 
-  // Navigation
-  // Defines the primary site structure rendered by navigation and discovery components.
+  /* Navigation structure used by the Nav component */
   nav: {
     home: { label: 'db', href: '/' },
     links: [
@@ -33,9 +26,8 @@ export const siteConfig = {
     ],
   },
 
-  // Global SEO Control
-  // Site-wide indexing toggle. 'true' enables discovery; 'false' injects 'noindex, nofollow'.
-  // Can be overridden per-page via frontmatter 'robot' property.
+  /* Global SEO visibility toggle */
+  /* Can be overridden by the 'robot' property in post frontmatter */
   robots: true,
 };
 

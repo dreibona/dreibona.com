@@ -1,41 +1,28 @@
 ---
-/**
- * Lab Entry Page ([id].astro):
- * This dynamic route handles the rendering of individual blog posts or "lab" entries.
- * It uses Astro's Content Layer to fetch and render Markdown/MDX content.
- */
+/* Individual blog post page renderer */
 import PostLayout from '@layouts/PostLayout.astro';
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { getReadingTime } from '@/utils/readingTime';
+import { getPublishedPosts } from '@/utils/posts';
 
-interface Props {
-  entry: CollectionEntry<'posts'>;
-}
-
-/**
- * Static Route Generation:
- * Fetches all posts and generates a unique URL for each one based on its 'id'.
- * Filters out drafts to ensure only production-ready content is built.
- */
 export async function getStaticPaths() {
-  const posts = await getCollection('posts');
-  const publishedPosts = posts.filter((post: CollectionEntry<'posts'>) => !post.data.draft);
-  return publishedPosts.map((entry: CollectionEntry<'posts'>) => ({
+  /* Generates static routes for every published post */
+  const posts = await getPublishedPosts();
+  return posts.map((entry) => ({
     params: { id: entry.id },
     props: { entry },
   }));
 }
 
-const { entry } = Astro.props;
+interface Props {
+  entry: CollectionEntry<'posts'>;
+}
 
-/**
- * Content Rendering:
- * 'render(entry)' processes the Markdown/MDX content, handling components and syntax highlighting.
- * 'getReadingTime' calculates the estimated time to read based on the raw body content.
- */
+const { entry } = Astro.props;
+/* Renders markdown content and calculates estimated reading time */
 const { Content } = await render(entry);
-const readingTime = getReadingTime(entry.body || '');
+const readingTime = getReadingTime(entry.body ?? '');
 ---
 
 <PostLayout meta={entry.data} readingTime={readingTime}>

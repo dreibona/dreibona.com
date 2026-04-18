@@ -1,10 +1,7 @@
+/* Zod schema for blog post content validation */
 import { z } from 'astro/zod';
 
-/**
- * Post Schema
- * Defines the structure of frontmatter for blog posts.
- * Extracted to a standalone file for reuse in CLI tools or external validation scripts.
- */
+/* Defines the structure and validation rules for post metadata */
 export const postSchema = (image: any) =>
   z.object({
     title: z.string(),

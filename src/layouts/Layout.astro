@@ -1,4 +1,5 @@
 ---
+/* Main site layout including SEO, navigation, and footer */
 import { Font } from 'astro:assets';
 import '@styles/global.css';
 import Nav from '@components/Nav.astro';
@@ -16,22 +17,14 @@ interface Props {
 
 const { meta: pageMeta, nav = siteConfig.nav } = Astro.props;
 
-/**
- * SEO Resolution:
- * Orchestrates the merge between global site settings and page-specific overrides.
- * Generates the unified 'headMeta' object and semantic JSON-LD schema.
- */
+/* Compute SEO metadata and structured data based on page props */
 const headMeta = getMeta(pageMeta, Astro.url);
 const schemaMarkup = getSchema(headMeta);
-const author = headMeta.author;
 ---
 
 <!doctype html>
 <html lang={headMeta.loc}>
   <head>
-    {
-      /* Font Optimization: Uses Astro's Font component to download and inject CSS with font-display: swap. */
-    }
     <Font cssVariable='--font-sans' />
     <Font cssVariable='--font-mono' />
     <SEO headMeta={headMeta} schemaMarkup={schemaMarkup} />
@@ -39,17 +32,19 @@ const author = headMeta.author;
 
   <body>
     <a href='#main-content' class='skip-link'>Skip to content</a>
-    {
-      /*
-        GEO Optimization (Generative Engine Optimization):
-        The 'data-nosnippet' attribute instructs search engines and AI agents to ignore
-        navigational/footer boilerplate, focusing context extraction purely on the <main> content.
-    */
-    }
-    <header data-nosnippet><div><Nav nav={nav} /></div></header>
-    <main id='main-content'><Limiter><slot /></Limiter></main>
+
+    <header data-nosnippet>
+      <Nav nav={nav} />
+    </header>
+
+    <main id='main-content'>
+      <Limiter><slot /></Limiter>
+    </main>
+
     <footer data-nosnippet>
-      <Limiter><Footer author={author} year={new Date().getFullYear()} /></Limiter>
+      <Limiter>
+        <Footer author={headMeta.author} year={new Date().getFullYear()} />
+      </Limiter>
     </footer>
   </body>
 </html>

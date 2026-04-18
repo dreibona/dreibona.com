@@ -1,14 +1,7 @@
-/**
- * Date Utilities
- * Provides centralized date formatting logic to ensure consistency across the site.
- */
+/* Date formatting utilities for consistent display across the site */
 import { siteConfig } from '../config/site';
 
-/**
- * Intl Formatter:
- * Uses the global 'locale' from siteConfig to format dates.
- * Defaults to UTC timeZone to prevent hydration mismatches between server and client.
- */
+/* Shared formatter using site locale and UTC to avoid hydration mismatches */
 const dateFormatter = new Intl.DateTimeFormat(siteConfig.locale, {
   timeZone: 'UTC',
   day: '2-digit',
@@ -16,6 +9,7 @@ const dateFormatter = new Intl.DateTimeFormat(siteConfig.locale, {
   year: 'numeric',
 });
 
+/* Formats a Date object or string into a localized string */
 export const formatDate = (date: Date | string): string => {
   const d = typeof date === 'string' ? new Date(date) : date;
   return dateFormatter.format(d);

@@ -1,0 +1,77 @@
+---
+/* Component for displaying a preview card of a blog post */
+import { Image } from 'astro:assets';
+import { formatDate } from '@/utils/date';
+import type { Post } from '@/utils/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+/* Destructure post metadata and format date for display */
+const { title, description, publishDate, image, imageAlt, tags } = post.data;
+const date = formatDate(publishDate);
+---
+
+<article>
+  <a href={`/lab/${post.id}/`}>
+    <h2>{title}</h2>
+  </a>
+
+  {description && <p class='description'>{description}</p>}
+
+  <div class='meta'>
+    <time datetime={publishDate.toISOString()}>{date}</time>
+    {
+      tags?.length > 0 && (
+        <ul class='tags' role='list'>
+          {tags.map((tag: string) => (
+            <li>
+              <a href={`/lab/tags/${tag}/`}>#{tag}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+
+  {image && <Image src={image} alt={imageAlt ?? title} loading='lazy' decoding='async' />}
+</article>
+
+<style>
+  article {
+    & h2 {
+      margin-block-end: var(--space-xs);
+    }
+
+    & .description {
+      margin-block-end: var(--space-sm);
+    }
+
+    & .meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: var(--text-sm);
+      opacity: 0.7;
+      margin-block-end: var(--space-sm);
+    }
+
+    & .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+
+      & a {
+        font-family: var(--font-mono);
+        opacity: 1;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+</style>
