@@ -1,0 +1,42 @@
+---
+/* Paginated list of posts filtered by tag — Spanish locale */
+import Layout from '@layouts/Layout.astro';
+import PostList from '@components/PostList.astro';
+import { getTagStaticPaths } from '@/utils/routes';
+import { useTranslations } from '@/i18n/translations';
+import type { Locale } from '@/i18n/locales';
+import type { Page } from 'astro';
+import type { PostEntry } from '@/utils/routes';
+import type { PostMeta } from '@config/seo';
+
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+  return await getTagStaticPaths(paginate, 'es-ES');
+}
+
+interface Props {
+  page: Page<PostEntry>;
+}
+
+const { tag } = Astro.params;
+const { page } = Astro.props;
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const pageNum = page.currentPage > 1 ? ` — ${t('tag.page')} ${page.currentPage}` : '';
+
+/* Page-specific metadata for the selected tag and pagination state */
+const pageMeta: PostMeta = {
+  title: `${t('tag.metaTitle.prefix')} "${tag}"${pageNum}`,
+  description: `${t('tag.metaDescription.prefix')} ${tag}.`,
+};
+---
+
+<Layout meta={pageMeta}>
+  <PostList
+    tag={tag}
+    posts={page.data}
+    currentPage={page.currentPage}
+    totalPages={page.lastPage}
+    baseUrl={`/es-es/lab/tags/${tag}`}
+  />
+</Layout>

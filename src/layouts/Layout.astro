@@ -9,9 +9,11 @@ import '@styles/global.css';
 import Nav from '@components/Nav.astro';
 import Footer from '@components/Footer.astro';
 import SEO from '@components/SEO.astro';
-import { siteConfig } from '@config/site';
 import { getMeta, getSchema } from '@config/seo';
 import type { PostMeta } from '@config/seo';
+import type { Locale } from '@/i18n/locales';
+import { useTranslations } from '@/i18n/translations';
+import { getNav } from '@/i18n/nav';
 
 interface Props {
   meta?: PostMeta;
@@ -19,13 +21,19 @@ interface Props {
 
 const { meta: pageMeta } = Astro.props;
 
+/* Derive locale from current URL via Astro's built-in i18n routing */
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+
+const nav = getNav(locale);
+
 /* Compute SEO metadata and structured data based on page props */
-const headMeta = getMeta(pageMeta, Astro.url);
+const headMeta = getMeta(pageMeta, Astro.url, locale);
 const schemaMarkup = getSchema(headMeta);
 ---
 
 <!doctype html>
-<html lang={headMeta.loc}>
+<html lang={locale}>
   <head>
     <Font cssVariable='--font-sans' />
     <Font cssVariable='--font-mono' />
@@ -33,10 +41,10 @@ const schemaMarkup = getSchema(headMeta);
   </head>
 
   <body>
-    <a href='#main-content' class='skip-link'>Skip to content</a>
+    <a href='#main-content' class='skip-link'>{t('skip.link')}</a>
 
     <header data-nosnippet>
-      <Nav home={siteConfig.nav.home} links={siteConfig.nav.links} />
+      <Nav home={nav.home} links={nav.links} locale={locale} />
     </header>
 
     <main id='main-content'>
@@ -47,7 +55,7 @@ const schemaMarkup = getSchema(headMeta);
 
     <footer data-nosnippet>
       <div class='limiter'>
-        <Footer author={headMeta.author} year={new Date().getFullYear()} />
+        <Footer author={headMeta.author} year={new Date().getFullYear()} locale={locale} />
       </div>
     </footer>
   </body>

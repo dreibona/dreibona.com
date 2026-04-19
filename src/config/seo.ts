@@ -2,8 +2,8 @@
 /* SEO engine to manage metadata and structured data generation                */
 /* ─────────────────────────────────────────────────────────────────────────── */
 import { siteConfig } from './site';
-import { buildPageTitle, formatSegmentName } from '@/utils/titleBuilder';
 import type { ImageMetadata } from 'astro';
+import { OG_LOCALE_MAP, LOCALE_PATHS, type Locale } from '@/i18n/locales';
 
 export interface PostMeta {
   title?: string;
@@ -25,6 +25,7 @@ export interface HeadMeta {
   image: { url: string; alt: string };
   baseSite: string;
   loc: string;
+  locale: Locale;
   type: string;
   robot: string;
   currentUrl: string;
@@ -33,9 +34,36 @@ export interface HeadMeta {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
+/* Internal title and segment utilities (absorbed from titleBuilder)           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+/* URL path segments that represent locale prefixes — shared by buildPageTitle and getSchema */
+const LOCALE_PATH_SEGMENTS = new Set(Object.values(LOCALE_PATHS).filter(Boolean));
+
+/* Formats a URL segment into a display name */
+const formatSegmentName = (segment: string): string =>
+  segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ');
+
+/* Builds page title from metadata or URL context, skipping locale prefix segments */
+const buildPageTitle = (
+  metaTitle: string | undefined,
+  pathname: string,
+  siteName: string,
+  siteTitle: string,
+): string => {
+  if (metaTitle && metaTitle !== siteTitle) return `${metaTitle} — ${siteName}`;
+  const segment = pathname
+    .split('/')
+    .filter(Boolean)
+    .filter((s) => !LOCALE_PATH_SEGMENTS.has(s))
+    .at(-1);
+  return segment ? `${formatSegmentName(segment)} — ${siteName}` : siteTitle;
+};
+
+/* ─────────────────────────────────────────────────────────────────────────── */
 /* Merges page-specific overrides with global site defaults                    */
 /* ─────────────────────────────────────────────────────────────────────────── */
-export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
+export const getMeta = (pageMeta: PostMeta = {}, url: URL, locale: Locale = 'en'): HeadMeta => {
   const { pathname, href } = url;
 
   const isRobotEnabled = pageMeta.robot ?? siteConfig.robots;
@@ -63,7 +91,8 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
       alt: pageMeta.imageAlt ?? title,
     },
     baseSite: siteConfig.url,
-    loc: siteConfig.locale,
+    loc: OG_LOCALE_MAP[locale],
+    locale,
     type,
     robot,
     currentUrl: href,
@@ -90,17 +119,24 @@ export const getSchema = (meta: HeadMeta): string => {
     url: meta.baseSite,
   };
 
-  /* Build breadcrumb navigation items from the current URL path */
-  const segments = new URL(meta.currentUrl).pathname.split('/').filter(Boolean);
+  /* Build breadcrumb items, skipping locale path segments */
+  const allSegments = new URL(meta.currentUrl).pathname.split('/').filter(Boolean);
+  const localePrefix = allSegments.find((s) => LOCALE_PATH_SEGMENTS.has(s));
+  const urlPrefix = localePrefix ? `/${localePrefix}` : '';
+  const contentSegments = allSegments.filter((s) => !LOCALE_PATH_SEGMENTS.has(s));
+
   const breadcrumb: SchemaNode = {
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Home', item: meta.baseSite },
-      ...segments.map((seg, i) => ({
+      ...contentSegments.map((seg, i) => ({
         '@type': 'ListItem',
         position: i + 2,
         name: formatSegmentName(seg),
-        item: new URL(`/${segments.slice(0, i + 1).join('/')}/`, meta.baseSite).toString(),
+        item: new URL(
+          `${urlPrefix}/${contentSegments.slice(0, i + 1).join('/')}/`,
+          meta.baseSite,
+        ).toString(),
       })),
     ],
   };

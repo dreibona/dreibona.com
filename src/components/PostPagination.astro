@@ -3,6 +3,9 @@
 /* Component for rendering pagination navigation                               */
 /* Provides previous/next and numbered page links with accessibility support   */
 /* ─────────────────────────────────────────────────────────────────────────── */
+import { useTranslations } from '@/i18n/translations';
+import type { Locale } from '@/i18n/locales';
+
 interface Props {
   currentPage: number;
   totalPages: number;
@@ -10,6 +13,9 @@ interface Props {
 }
 
 const { currentPage, totalPages, baseUrl } = Astro.props;
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
 
 const base = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 const getPageUrl = (page: number) => (page === 1 ? `${base}/` : `${base}/${page}/`);
@@ -28,7 +34,7 @@ const hasNext = currentPage < totalPages;
             href={hasPrev ? getPageUrl(currentPage - 1) : undefined}
             class:list={['page-link', { disabled: !hasPrev }]}
             aria-disabled={!hasPrev || undefined}
-            aria-label='Previous page'
+            aria-label={t('pagination.prev')}
             tabindex={!hasPrev ? -1 : undefined}
           >
             <svg
@@ -56,7 +62,7 @@ const hasNext = currentPage < totalPages;
                 href={getPageUrl(page)}
                 class:list={['page-link', { active: isCurrent }]}
                 aria-current={isCurrent ? 'page' : undefined}
-                aria-label={`Page ${page}`}
+                aria-label={`${t('pagination.page')} ${page}`}
               >
                 {page}
               </a>
@@ -69,7 +75,7 @@ const hasNext = currentPage < totalPages;
             href={hasNext ? getPageUrl(currentPage + 1) : undefined}
             class:list={['page-link', { disabled: !hasNext }]}
             aria-disabled={!hasNext || undefined}
-            aria-label='Next page'
+            aria-label={t('pagination.next')}
             tabindex={!hasNext ? -1 : undefined}
           >
             <svg

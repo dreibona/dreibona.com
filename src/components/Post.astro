@@ -6,9 +6,10 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 import { Image } from 'astro:assets';
 import { formatDate } from '@/utils/date';
-import { getPostUrl } from '@/utils/postUrls';
+import { getLocalizedPostUrl, getLocalizedTagUrl, extractPostSlug } from '@/i18n/utils';
 import type { PostEntry } from '@/utils/routes';
 import type { CollectionEntry } from 'astro:content';
+import type { Locale } from '@/i18n/locales';
 
 interface Props {
   post?: PostEntry;
@@ -18,6 +19,9 @@ interface Props {
 }
 
 const { post, meta, readingTime, variant = 'list' } = Astro.props;
+
+/* Derive locale from current page context */
+const locale = (Astro.currentLocale ?? 'en') as Locale;
 
 /* Use provided data or extract from post */
 const data = meta || post?.data;
@@ -32,7 +36,7 @@ const { title, description, publishDate, image, imageAlt, tags, author } = data 
       <h1>{title}</h1>
       <p>
         {author} &mdash;
-        <time datetime={publishDate?.toISOString()}>{formatDate(publishDate)}</time>
+        <time datetime={publishDate?.toISOString()}>{formatDate(publishDate, locale)}</time>
         {readingTime && <span> &mdash; {readingTime}</span>}
       </p>
 
@@ -41,7 +45,7 @@ const { title, description, publishDate, image, imageAlt, tags, author } = data 
           <ul role='list' aria-label='Post tags'>
             {tags.map((tag: string) => (
               <li>
-                <a class='tag' href={`/lab/tags/${tag}/`}>
+                <a class='tag' href={getLocalizedTagUrl(tag, locale)}>
                   #{tag}
                 </a>
               </li>
@@ -55,17 +59,17 @@ const { title, description, publishDate, image, imageAlt, tags, author } = data 
     <slot />
   ) : (
     <>
-      <a href={getPostUrl(postId)}>
+      <a href={getLocalizedPostUrl(extractPostSlug(postId ?? ''), locale)}>
         <h2>{title}</h2>
       </a>
       {description && <p>{description}</p>}
-      <time datetime={publishDate?.toISOString()}>{formatDate(publishDate)}</time>
+      <time datetime={publishDate?.toISOString()}>{formatDate(publishDate, locale)}</time>
       {
         tags?.length > 0 && (
           <ul role='list'>
             {tags.map((tag: string) => (
               <li>
-                <a class='tag' href={`/lab/tags/${tag}/`}>
+                <a class='tag' href={getLocalizedTagUrl(tag, locale)}>
                   #{tag}
                 </a>
               </li>

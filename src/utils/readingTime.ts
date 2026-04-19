@@ -2,10 +2,10 @@
 /* Utility to calculate the estimated reading time of a text string            */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-/* Returns a formatted string (e.g., "5 min read") */
-export function getReadingTime(text: string): string {
+/* Returns a formatted string (e.g., "5 min read") using the provided label */
+export function getReadingTime(text: string, minReadLabel: string = 'min read'): string {
   if (!text) {
-    return '1 min read';
+    return `1 ${minReadLabel}`;
   }
 
   /* Remove HTML tags and count words using Unicode-aware matching */
@@ -16,5 +16,5 @@ export function getReadingTime(text: string): string {
   const wordsPerMinute = 200;
   const minutes = Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 
-  return `${minutes} min read`;
+  return `${minutes} ${minReadLabel}`;
 }

@@ -5,8 +5,11 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 import Post from '@components/Post.astro';
 import PostPagination from '@components/PostPagination.astro';
-import { buildListPageContent } from '@/utils/titleBuilder';
+
+import { useTranslations } from '@/i18n/translations';
+import { getLocalizedPageUrl } from '@/i18n/utils';
 import type { PostEntry } from '@/utils/routes';
+import type { Locale } from '@/i18n/locales';
 
 interface Props {
   title?: string;
@@ -18,7 +21,10 @@ interface Props {
 }
 
 const { title, tag, posts, currentPage, totalPages, baseUrl } = Astro.props;
-const { showTotal, showBackLink } = buildListPageContent(tag);
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const showTotal = !!tag;
+const showBackLink = !!tag;
 ---
 
 <div class='prose'>
@@ -28,21 +34,21 @@ const { showTotal, showBackLink } = buildListPageContent(tag);
         Tag: <span class='tag'>#{tag}</span>
       </>
     ) : (
-      title || 'Lab'
+      title || t('lab.title')
     )
   }
 
   {
     showTotal && (
       <p>
-        {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+        {posts.length} {posts.length === 1 ? t('lab.postCount.one') : t('lab.postCount.many')}
       </p>
     )
   }
   {
     showBackLink && (
-      <a href='/lab/' class='back-link'>
-        &larr; Back to Lab
+      <a href={getLocalizedPageUrl('/lab/', locale)} class='back-link'>
+        {t('lab.backToLab')}
       </a>
     )
   }

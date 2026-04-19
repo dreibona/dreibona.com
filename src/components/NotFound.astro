@@ -1,0 +1,30 @@
+---
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* 404 Not Found — locale-aware, shared across all locale 404 pages           */
+/* Astro.currentLocale is propagated from the rendering page:                  */
+/*   /404.astro → 'en' | /es-es/404.astro → 'es-ES' | /pt-br/404.astro → 'pt-BR' */
+/* ─────────────────────────────────────────────────────────────────────────── */
+import Layout from '@layouts/Layout.astro';
+import type { PostMeta } from '@config/seo';
+import type { Locale } from '@/i18n/locales';
+import { useTranslations } from '@/i18n/translations';
+import { getLocalizedPageUrl } from '@/i18n/utils';
+
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+
+const meta: PostMeta = {
+  title: t('404.title'),
+  description: t('404.description'),
+  robot: false,
+};
+---
+
+<Layout meta={meta}>
+  <div class='prose'>
+    <h1>{t('404.heading')}</h1>
+    <p class='error-subtitle'>{t('404.subtitle')}</p>
+    <p>{t('404.body')}</p>
+    <a href={getLocalizedPageUrl('/', locale)} class='back-link'>{t('404.back')}</a>
+  </div>
+</Layout>

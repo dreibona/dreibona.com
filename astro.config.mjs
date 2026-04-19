@@ -1,3 +1,4 @@
+import { copyFile } from 'node:fs/promises';
 import { defineConfig, fontProviders } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
@@ -19,6 +20,18 @@ export default defineConfig({
     },
   },
 
+  i18n: {
+    defaultLocale: 'en',
+    locales: [
+      'en',
+      { path: 'es-es', codes: ['es-ES', 'es'] },
+      { path: 'pt-br', codes: ['pt-BR', 'pt'] },
+    ],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
+
   fonts: [
     {
       name: 'Reddit Sans Condensed',
@@ -36,6 +49,23 @@ export default defineConfig({
   ],
 
   integrations: [
+    {
+      /* Copies locale 404 pages to the correct path for Cloudflare Pages.     */
+      /* Astro only special-cases the root 404.astro → dist/404.html.          */
+      /* Locale variants are generated as dist/{locale}/404/index.html         */
+      /* but Cloudflare Pages expects dist/{locale}/404.html.                  */
+      name: 'locale-404',
+      hooks: {
+        'astro:build:done': async ({ dir }) => {
+          const locales = ['es-es', 'pt-br'];
+          await Promise.all(
+            locales.map((loc) =>
+              copyFile(new URL(`${loc}/404/index.html`, dir), new URL(`${loc}/404.html`, dir)),
+            ),
+          );
+        },
+      },
+    },
     mdx({
       rehypePlugins: [
         rehypeSlug,
@@ -43,6 +73,14 @@ export default defineConfig({
       ],
     }),
     sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: {
+          en: 'en-US',
+          'es-es': 'es-ES',
+          'pt-br': 'pt-BR',
+        },
+      },
       lastmod: new Date(),
     }),
   ],

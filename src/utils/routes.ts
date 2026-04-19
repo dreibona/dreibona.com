@@ -5,6 +5,8 @@
 import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import type { GetStaticPathsItem } from 'astro';
+import type { Locale } from '@/i18n/locales';
+import { extractLocaleFromId, extractPostSlug } from '@/i18n/utils';
 
 export type PostEntry = CollectionEntry<'posts'>;
 
@@ -12,54 +14,38 @@ export type PostEntry = CollectionEntry<'posts'>;
 export const byDateDesc = (a: PostEntry, b: PostEntry) =>
   b.data.publishDate.valueOf() - a.data.publishDate.valueOf();
 
-/* Retrieves all posts that are not marked as drafts */
-export async function getPublishedPosts(): Promise<PostEntry[]> {
+/* Retrieves all published posts for the given locale */
+export async function getPublishedPosts(locale: Locale): Promise<PostEntry[]> {
   const posts = await getCollection('posts');
-  return posts.filter((p: PostEntry) => !p.data.draft).sort(byDateDesc);
+  return posts
+    .filter((p: PostEntry) => !p.data.draft && extractLocaleFromId(p.id) === locale)
+    .sort(byDateDesc);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Retrieves posts for public display and indexing                             */
 /* Filters out drafts and posts specifically hidden from robots                */
 /* ─────────────────────────────────────────────────────────────────────────── */
-export async function getVisiblePosts(): Promise<PostEntry[]> {
+export async function getVisiblePosts(locale: Locale): Promise<PostEntry[]> {
   const posts = await getCollection('posts');
-  return posts.filter((p: PostEntry) => !p.data.draft && p.data.robot !== false).sort(byDateDesc);
+  return posts
+    .filter(
+      (p: PostEntry) =>
+        !p.data.draft && p.data.robot !== false && extractLocaleFromId(p.id) === locale,
+    )
+    .sort(byDateDesc);
 }
 
-/* Returns all visible posts associated with a given tag */
-export async function getPostsByTag(tag: string): Promise<PostEntry[]> {
-  const posts = await getVisiblePosts();
+/* Returns all visible posts associated with a given tag for the given locale */
+export async function getPostsByTag(tag: string, locale: Locale): Promise<PostEntry[]> {
+  const posts = await getVisiblePosts(locale);
   return posts.filter((p) => p.data.tags?.includes(tag));
 }
 
-/* Retrieves a unique list of all tags used across visible posts */
-export async function getAllTags(): Promise<string[]> {
-  const posts = await getVisiblePosts();
+/* Retrieves a unique list of all tags used across visible posts for the given locale */
+export async function getAllTags(locale: Locale): Promise<string[]> {
+  const posts = await getVisiblePosts(locale);
   return [...new Set(posts.flatMap((p) => p.data.tags ?? []))];
-}
-
-/* ─────────────────────────────────────────────────────────────────────────── */
-/* Route generation functions for static site generation                       */
-/* ─────────────────────────────────────────────────────────────────────────── */
-
-/* Generates paginated routes for the main blog list */
-export async function getLabRoutes(paginate: any): Promise<GetStaticPathsItem[]> {
-  const posts = await getPublishedPosts();
-  return paginate(posts, { pageSize: 10 });
-}
-
-/* Generates paginated routes for the tag list */
-export async function getTagRoutes(paginate: any): Promise<GetStaticPathsItem[]> {
-  const tags = await getAllTags();
-  return (
-    await Promise.all(
-      tags.map(async (tag) => {
-        const posts = await getPostsByTag(tag);
-        return paginate(posts, { params: { tag }, pageSize: 10 });
-      }),
-    )
-  ).flat();
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
@@ -67,20 +53,36 @@ export async function getTagRoutes(paginate: any): Promise<GetStaticPathsItem[]>
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 /* Generates static paths for the main lab listing page with pagination */
-export async function getLabStaticPaths(paginate: any): Promise<GetStaticPathsItem[]> {
-  return await getLabRoutes(paginate);
+export async function getLabStaticPaths(
+  paginate: any,
+  locale: Locale,
+): Promise<GetStaticPathsItem[]> {
+  const posts = await getPublishedPosts(locale);
+  return paginate(posts, { pageSize: 10 });
 }
 
 /* Generates static paths for individual post detail pages */
-export async function getPostDetailStaticPaths(): Promise<GetStaticPathsItem[]> {
-  const posts = await getPublishedPosts();
+/* params.id is the slug without locale prefix (e.g. 'post-1') */
+export async function getPostDetailStaticPaths(locale: Locale): Promise<GetStaticPathsItem[]> {
+  const posts = await getPublishedPosts(locale);
   return posts.map((entry) => ({
-    params: { id: entry.id },
+    params: { id: extractPostSlug(entry.id) },
     props: { entry },
   }));
 }
 
 /* Generates static paths for tag listing pages with pagination */
-export async function getTagStaticPaths(paginate: any): Promise<GetStaticPathsItem[]> {
-  return await getTagRoutes(paginate);
+export async function getTagStaticPaths(
+  paginate: any,
+  locale: Locale,
+): Promise<GetStaticPathsItem[]> {
+  const tags = await getAllTags(locale);
+  return (
+    await Promise.all(
+      tags.map(async (tag) => {
+        const posts = await getPostsByTag(tag, locale);
+        return paginate(posts, { params: { tag }, pageSize: 10 });
+      }),
+    )
+  ).flat();
 }

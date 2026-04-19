@@ -6,9 +6,11 @@ import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { getReadingTime } from '@/utils/readingTime';
 import { getPostDetailStaticPaths } from '@/utils/routes';
+import { useTranslations } from '@/i18n/translations';
+import type { Locale } from '@/i18n/locales';
 
 export async function getStaticPaths() {
-  return await getPostDetailStaticPaths();
+  return await getPostDetailStaticPaths('en');
 }
 
 interface Props {
@@ -17,7 +19,9 @@ interface Props {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const readingTime = getReadingTime(entry.body ?? '');
+const locale = (Astro.currentLocale ?? 'en') as Locale;
+const t = useTranslations(locale);
+const readingTime = getReadingTime(entry.body ?? '', t('post.readingTime'));
 ---
 
 <Layout meta={entry.data}>

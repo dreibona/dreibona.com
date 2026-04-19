@@ -1,31 +1,21 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
-/* RSS Feed Generator                                                          */
+/* RSS Feed Generator — English (default locale)                               */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 import rss from '@astrojs/rss';
-import { getPublishedPosts, type PostEntry } from '@/utils/routes';
-import { getPostUrl } from '@/utils/postUrls';
+import { getPublishedPosts } from '@/utils/routes';
+import { toRSSItem } from '@/utils/rss';
 import { siteConfig } from '@config/site';
 import type { APIContext } from 'astro';
 
-/* Transforms a post entry into an RSS feed item */
-export const toRSSItem = (post: PostEntry) => ({
-  title: post.data.title,
-  pubDate: post.data.publishDate,
-  description: post.data.description,
-  link: getPostUrl(post.id),
-});
-
-/* Generates RSS feed endpoint with published posts */
+/* Generates RSS feed endpoint with published English posts */
 export async function GET(context: APIContext) {
-  /* Retrieve all published posts to include in the feed */
-  const posts = await getPublishedPosts();
+  const posts = await getPublishedPosts('en');
 
   return rss({
     title: siteConfig.title,
     description: siteConfig.description,
     site: context.site!,
-    /* Map posts to RSS items with required metadata */
-    items: posts.map(toRSSItem),
+    items: posts.map((p) => toRSSItem(p, 'en')),
   });
 }

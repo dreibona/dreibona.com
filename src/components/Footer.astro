@@ -3,16 +3,23 @@
 /* Site footer component                                                       */
 /* Displays copyright information with author name and current year            */
 /* ─────────────────────────────────────────────────────────────────────────── */
+import type { Locale } from '@/i18n/locales';
+import { useTranslations } from '@/i18n/translations';
+import { getLocalizedPageUrl } from '@/i18n/utils';
+
 interface Props {
   author: string;
   year: number;
+  locale: Locale;
 }
 
-const { author, year } = Astro.props;
+const { author, year, locale } = Astro.props;
+const t = useTranslations(locale);
 ---
 
 <p>
-  design & code by <a href='/'>
+  {t('footer.by')}
+  <a href={getLocalizedPageUrl('/', locale)}>
     {author} © {year}
   </a>
 </p>

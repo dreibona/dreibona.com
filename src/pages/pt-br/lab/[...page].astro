@@ -1,0 +1,27 @@
+---
+/* Paginated list of all published blog posts — Brazilian Portuguese locale */
+import Layout from '@layouts/Layout.astro';
+import PostList from '@components/PostList.astro';
+import { getLabStaticPaths } from '@/utils/routes';
+import type { Page } from 'astro';
+import type { PostEntry } from '@/utils/routes';
+
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+  return await getLabStaticPaths(paginate, 'pt-BR');
+}
+
+interface Props {
+  page: Page<PostEntry>;
+}
+
+const { page } = Astro.props;
+---
+
+<Layout>
+  <PostList
+    posts={page.data}
+    currentPage={page.currentPage}
+    totalPages={page.lastPage}
+    baseUrl='/pt-br/lab'
+  />
+</Layout>

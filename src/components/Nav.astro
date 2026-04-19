@@ -1,35 +1,65 @@
 ---
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Main navigation component for the site header                               */
-/* Displays home link and navigation menu with active page indicator           */
+/* Receives pre-resolved labels from Layout via getNav(locale)                 */
+/* Renders nav links and language switcher                                     */
 /* ─────────────────────────────────────────────────────────────────────────── */
-import type { NavItem } from '@config/site';
+import type { NavItem } from '@/i18n/nav';
+import type { Locale } from '@/i18n/locales';
+import { LOCALES, LOCALE_LABELS, LOCALE_PATHS } from '@/i18n/locales';
+import { getLocalizedPageUrl, getCanonicalPath } from '@/i18n/utils';
 
 interface Props {
   home: NavItem;
   links: NavItem[];
+  locale: Locale;
 }
 
-const { home, links } = Astro.props;
+const { home, links, locale } = Astro.props;
 const path = Astro.url.pathname;
+
+/* Current path without locale prefix, used to build language switcher URLs */
+const basePath = getCanonicalPath(path);
 ---
 
 <nav>
   <div class='limiter'>
     <div class='nav-container'>
-      <a href={home.href} class='nav-home' aria-label='Home'>{home.label}</a>
+      <a href={getLocalizedPageUrl(home.href, locale)} class='nav-home' aria-label='Home'>
+        {home.label}
+      </a>
       <ul role='list' class='nav-links'>
         {
-          links.map(({ label, href }) => {
-            const isActive = path === href;
+          links.map(({ href, label }) => {
+            const localizedHref = getLocalizedPageUrl(href, locale);
+            const isActive = path === localizedHref;
             return (
               <li>
                 <a
-                  href={href}
+                  href={localizedHref}
                   class:list={['nav-link', { active: isActive }]}
                   aria-current={isActive ? 'page' : undefined}
                 >
                   {label.toUpperCase()}
+                </a>
+              </li>
+            );
+          })
+        }
+        {
+          LOCALES.map((loc) => {
+            const locPath = LOCALE_PATHS[loc];
+            const switchHref = locPath ? `/${locPath}${basePath}` : basePath;
+            const isCurrent = loc === locale;
+            return (
+              <li>
+                <a
+                  href={switchHref}
+                  class:list={['nav-lang', { active: isCurrent }]}
+                  aria-current={isCurrent ? 'true' : undefined}
+                  hreflang={loc}
+                >
+                  {LOCALE_LABELS[loc]}
                 </a>
               </li>
             );
