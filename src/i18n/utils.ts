@@ -6,6 +6,18 @@ import { getRelativeLocaleUrl } from 'astro:i18n';
 import type { Locale } from './locales';
 import { DEFAULT_LOCALE, LOCALE_PATHS } from './locales';
 
+/* Detects locale from a URL pathname using the locale path prefixes            */
+/* e.g. '/pt-br/about/' → 'pt-BR', '/es-es/now/' → 'es-ES', '/about/' → 'en' */
+/* More reliable than Astro.currentLocale for static pages in locale dirs       */
+export function getLocaleFromPath(pathname: string): Locale {
+  for (const [locale, locPath] of Object.entries(LOCALE_PATHS) as [Locale, string][]) {
+    if (locPath && (pathname.startsWith(`/${locPath}/`) || pathname === `/${locPath}`)) {
+      return locale;
+    }
+  }
+  return DEFAULT_LOCALE;
+}
+
 /* Generates a locale-prefixed URL for a post */
 export function getLocalizedPostUrl(postSlug: string, locale: Locale): string {
   const path = `/lab/${postSlug}/`;

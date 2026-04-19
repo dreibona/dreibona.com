@@ -11,9 +11,10 @@ import Footer from '@components/Footer.astro';
 import SEO from '@components/SEO.astro';
 import { getMeta, getSchema } from '@config/seo';
 import type { PostMeta } from '@config/seo';
-import type { Locale } from '@/i18n/locales';
+
 import { useTranslations } from '@/i18n/translations';
 import { getNav } from '@/i18n/nav';
+import { getLocaleFromPath } from '@/i18n/utils';
 
 interface Props {
   meta?: PostMeta;
@@ -21,8 +22,9 @@ interface Props {
 
 const { meta: pageMeta } = Astro.props;
 
-/* Derive locale from current URL via Astro's built-in i18n routing */
-const locale = (Astro.currentLocale ?? 'en') as Locale;
+/* Derive locale from URL path — reliable for both static and dynamic pages     */
+/* Astro.currentLocale is not set correctly for static pages in locale dirs     */
+const locale = getLocaleFromPath(Astro.url.pathname);
 const t = useTranslations(locale);
 
 const nav = getNav(locale);
