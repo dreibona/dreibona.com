@@ -1,5 +1,8 @@
-/* SEO engine to manage metadata and structured data generation */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* SEO engine to manage metadata and structured data generation                */
+/* ─────────────────────────────────────────────────────────────────────────── */
 import { siteConfig } from './site';
+import { buildPageTitle, formatSegmentName } from '@/utils/titleBuilder';
 import type { ImageMetadata } from 'astro';
 
 export interface PostMeta {
@@ -29,7 +32,9 @@ export interface HeadMeta {
   modifiedDate?: string;
 }
 
-/* Merges page-specific overrides with global site defaults */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Merges page-specific overrides with global site defaults                    */
+/* ─────────────────────────────────────────────────────────────────────────── */
 export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
   const { pathname, href } = url;
 
@@ -46,17 +51,7 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL): HeadMeta => {
 
   const title = pageMeta.title ?? siteConfig.title;
   const type = pageMeta.type ?? 'website';
-
-  /* Logic to build the browser tab title based on page context */
-  let pageTitle: string;
-  if (pageMeta.title && pageMeta.title !== siteConfig.title) {
-    pageTitle = `${pageMeta.title} — ${siteConfig.name}`;
-  } else {
-    const segment = pathname.split('/').filter(Boolean).at(-1);
-    pageTitle = segment
-      ? `${segment.charAt(0).toUpperCase()}${segment.slice(1)} — ${siteConfig.name}`
-      : siteConfig.title;
-  }
+  const pageTitle = buildPageTitle(pageMeta.title, pathname, siteConfig.name, siteConfig.title);
 
   return {
     title,
@@ -82,7 +77,9 @@ interface SchemaNode {
   [key: string]: unknown;
 }
 
-/* Generates JSON-LD structured data for search engine optimization */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Generates JSON-LD structured data for search engine optimization           */
+/* ─────────────────────────────────────────────────────────────────────────── */
 export const getSchema = (meta: HeadMeta): string => {
   const isArticle = meta.type === 'article';
   const imageUrl = new URL(meta.image.url, meta.baseSite).toString();
@@ -102,7 +99,7 @@ export const getSchema = (meta: HeadMeta): string => {
       ...segments.map((seg, i) => ({
         '@type': 'ListItem',
         position: i + 2,
-        name: seg.charAt(0).toUpperCase() + seg.slice(1).replace(/-/g, ' '),
+        name: formatSegmentName(seg),
         item: new URL(`/${segments.slice(0, i + 1).join('/')}/`, meta.baseSite).toString(),
       })),
     ],

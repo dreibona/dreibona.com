@@ -1,0 +1,61 @@
+---
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Component for rendering paginated post list pages (Lab and Tags)            */
+/* Displays post lists with optional tag filtering and pagination controls     */
+/* ─────────────────────────────────────────────────────────────────────────── */
+import Post from '@components/Post.astro';
+import PostPagination from '@components/PostPagination.astro';
+import { buildListPageContent } from '@/utils/titleBuilder';
+import type { PostEntry } from '@/utils/routes';
+
+interface Props {
+  title?: string;
+  tag?: string;
+  posts: PostEntry[];
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+}
+
+const { title, tag, posts, currentPage, totalPages, baseUrl } = Astro.props;
+const { showTotal, showBackLink } = buildListPageContent(tag);
+---
+
+<div class='prose'>
+  {
+    tag ? (
+      <>
+        Tag: <span class='tag'>#{tag}</span>
+      </>
+    ) : (
+      title || 'Lab'
+    )
+  }
+
+  {
+    showTotal && (
+      <p>
+        {posts.length} {posts.length === 1 ? 'post' : 'posts'}
+      </p>
+    )
+  }
+  {
+    showBackLink && (
+      <a href='/lab/' class='back-link'>
+        &larr; Back to Lab
+      </a>
+    )
+  }
+</div>
+
+<ul class='post-list' role='list'>
+  {
+    posts.map((post) => (
+      <li>
+        <Post post={post} variant='list' />
+      </li>
+    ))
+  }
+</ul>
+
+<PostPagination currentPage={currentPage} totalPages={totalPages} baseUrl={baseUrl} />

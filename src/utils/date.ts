@@ -1,4 +1,6 @@
-/* Date formatting utilities for consistent display across the site */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Date formatting utilities for consistent display across the site            */
+/* ─────────────────────────────────────────────────────────────────────────── */
 import { siteConfig } from '../config/site';
 
 /* Shared formatter using site locale and UTC to avoid hydration mismatches */

@@ -1,8 +1,10 @@
-/* Utility to calculate the estimated reading time of a text string */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Utility to calculate the estimated reading time of a text string            */
+/* ─────────────────────────────────────────────────────────────────────────── */
 
 /* Returns a formatted string (e.g., "5 min read") */
 export function getReadingTime(text: string): string {
-  if (!text || typeof text !== 'string') {
+  if (!text) {
     return '1 min read';
   }
 

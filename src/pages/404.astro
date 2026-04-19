@@ -1,59 +1,19 @@
 ---
-/* Custom 404 error page for non-existent routes */
 import Layout from '@layouts/Layout.astro';
 import type { PostMeta } from '@config/seo';
 
 const meta: PostMeta = {
   title: '404 — Page Not Found',
   description: 'The page you are looking for does not exist or has been moved.',
-  robot: false /* Prevents search engines from indexing the 404 page */,
+  robot: false,
 };
 ---
 
 <Layout meta={meta}>
-  <div class='error'>
+  <div class='prose'>
     <h1>404</h1>
-    <p class='subtitle'>Page Not Found</p>
-    <p class='description'>The page you are looking for doesn't exist or has been moved.</p>
+    <p class='error-subtitle'>Page Not Found</p>
+    <p>The page you are looking for doesn't exist or has been moved.</p>
     <a href='/' class='back-link'>&larr; Return to Home</a>
   </div>
 </Layout>
-
-<style>
-  .error {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding-block: var(--space-xl);
-  }
-
-  h1 {
-    line-height: 1;
-    margin-block-end: var(--space-sm);
-  }
-
-  .subtitle {
-    font-size: var(--text-md);
-    font-weight: 700;
-    margin-block-end: var(--space-xs);
-  }
-
-  .description {
-    margin-block-end: var(--space-lg);
-  }
-
-  .back-link {
-    display: inline-block;
-    padding-inline: var(--space-md);
-    padding-block: var(--space-sm);
-    background-color: var(--color-black);
-    color: var(--color-white);
-    font-weight: 700;
-    font-size: var(--text-sm);
-    transition: opacity var(--transition-fast);
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-</style>

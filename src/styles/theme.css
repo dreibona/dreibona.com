@@ -1,0 +1,89 @@
+/* ───────────────────────────────────────────────────────────────────────── */
+/* THEME TOKENS                                                              */
+/* Generate CSS custom properties from theme configuration                   */
+/* This file bridges TypeScript theme config and CSS styling                 */
+/* All values are derived from src/config/theme.ts                           */
+/* Fonts are loaded via Astro font integration in astro.config.mjs           */
+/* ───────────────────────────────────────────────────────────────────────── */
+
+@layer tokens {
+  :root {
+    /* ───────────────────────────────────────────────────────────────────── */
+    /* COLOR TOKENS                                                          */
+    /* ───────────────────────────────────────────────────────────────────── */
+
+    /* Neutral colors for text and backgrounds */
+    --color-white: oklch(98% 0 0);
+    --color-black: oklch(10% 0 0);
+
+    /* Brand colors - primary and secondary */
+    --color-primary: oklch(55% 0 0);
+    --color-secondary: oklch(65% 0 0);
+
+    /* Semantic colors for different states and messages */
+    --color-success: oklch(70% 0.15 142);
+    --color-warning: oklch(75% 0.15 70);
+    --color-error: oklch(60% 0.15 25);
+    --color-info: oklch(60% 0.15 250);
+
+    /* ───────────────────────────────────────────────────────────────────── */
+    /* TYPOGRAPHY TOKENS                                                     */
+    /* ───────────────────────────────────────────────────────────────────── */
+
+    /* Font families */
+    --font-sans: Reddit Sans Condensed (weights: 400, 700), system-ui, -apple-system, sans-serif;
+    --font-mono: Reddit Mono (weight: 400), Menlo, Monaco, monospace;
+
+    /* Font sizes */
+    --text-xs: clamp(0.75rem, 0.2vw + 0.75rem, 0.85rem);
+    --text-sm: clamp(0.8rem, 0.2vw + 0.8rem, 0.9rem);
+    --text-base: clamp(1rem, 0.5vw + 1rem, 1.125rem);
+    --text-md: clamp(1rem, 1.5vw + 1rem, 1.5rem);
+    --text-lg: clamp(1.5rem, 3vw + 1rem, 2.25rem);
+    --text-xl: clamp(2rem, 5vw + 1rem, 3.25rem);
+
+    /* Font weights */
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+
+    /* Line heights for different text types */
+    --line-height-tight: 1.1;
+    --line-height-normal: 1.6;
+    --line-height-relaxed: 1.8;
+
+    /* ───────────────────────────────────────────────────────────────────── */
+    /* SPACING TOKENS                                                        */
+    /* ───────────────────────────────────────────────────────────────────── */
+
+    /* Responsive spacing scale using clamp() */
+    /* Automatically adjusts padding and margins based on viewport */
+    --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
+    --space-sm: clamp(0.5rem, 1vw, 0.75rem);
+    --space-md: clamp(1rem, 2vw, 1.5rem);
+    --space-lg: clamp(2rem, 4vw, 3rem);
+    --space-xl: clamp(4rem, 8vw, 6rem);
+
+    /* ───────────────────────────────────────────────────────────────────── */
+    /* BORDER TOKENS                                                         */
+    /* ───────────────────────────────────────────────────────────────────── */
+
+    /* Border widths - responsive */
+    --border-sm: clamp(2px, 0.3vw, 3px);
+    --border-md: clamp(4px, 1vw, 10px);
+
+    /* Border radius for rounded corners */
+    --radius-sm: 0.25rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px;
+
+    /* ───────────────────────────────────────────────────────────────────── */
+    /* TRANSITION TOKENS                                                     */
+    /* ───────────────────────────────────────────────────────────────────── */
+
+    /* Animation and transition speeds */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+  }
+}

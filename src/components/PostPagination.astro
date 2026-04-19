@@ -1,5 +1,8 @@
 ---
-/* Component for rendering pagination navigation */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Component for rendering pagination navigation                               */
+/* Provides previous/next and numbered page links with accessibility support   */
+/* ─────────────────────────────────────────────────────────────────────────── */
 interface Props {
   currentPage: number;
   totalPages: number;
@@ -8,11 +11,9 @@ interface Props {
 
 const { currentPage, totalPages, baseUrl } = Astro.props;
 
-/* Normalizes the base URL and provides a helper for page link generation */
 const base = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
 const getPageUrl = (page: number) => (page === 1 ? `${base}/` : `${base}/${page}/`);
 
-/* Generates the range of pages and navigation state */
 const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 const hasPrev = currentPage > 1;
 const hasNext = currentPage < totalPages;
@@ -91,48 +92,3 @@ const hasNext = currentPage < totalPages;
     </nav>
   )
 }
-
-<style>
-  .pagination {
-    margin-block: var(--space-xl);
-    display: flex;
-    justify-content: center;
-  }
-
-  ul {
-    display: flex;
-    gap: var(--space-xs);
-    align-items: center;
-  }
-
-  .page-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-inline-size: calc(var(--space-lg) / 1.2);
-    min-block-size: calc(var(--space-lg) / 1.2);
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    font-weight: 700;
-    transition:
-      background-color var(--transition-fast),
-      color var(--transition-fast);
-
-    &:hover:not(.disabled, .active) {
-      background-color: var(--color-primary);
-    }
-
-    &.active {
-      background-color: var(--color-black);
-      color: var(--color-white);
-      cursor: default;
-      pointer-events: none;
-    }
-
-    &.disabled {
-      opacity: 0.2;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-  }
-</style>

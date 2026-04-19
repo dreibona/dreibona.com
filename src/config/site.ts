@@ -1,6 +1,16 @@
-/* Global site configuration and constants */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Global site configuration and constants                                     */
+/* ─────────────────────────────────────────────────────────────────────────── */
 
-/* Main configuration object for the site */
+/* Navigation item interface */
+export interface NavItem {
+  label: string;
+  href: string;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Main configuration object for the site                                      */
+/* ─────────────────────────────────────────────────────────────────────────── */
 export const siteConfig = {
   /* Brand and ownership information */
   name: 'dreibona',
@@ -16,19 +26,22 @@ export const siteConfig = {
   defaultImage: '/assets/cover.jpg',
   defaultImageAlt: 'dreibona',
 
-  /* Navigation structure used by the Nav component */
+  /* Global SEO visibility toggle */
+  /* Can be overridden by the 'robot' property in post frontmatter */
+  robots: true,
+
+  /* Navigation structure */
   nav: {
-    home: { label: 'db', href: '/' },
+    home: {
+      label: 'db',
+      href: '/',
+    },
     links: [
       { label: 'Lab', href: '/lab/' },
       { label: 'About', href: '/about/' },
       { label: 'Now', href: '/now/' },
-    ],
+    ] as NavItem[],
   },
-
-  /* Global SEO visibility toggle */
-  /* Can be overridden by the 'robot' property in post frontmatter */
-  robots: true,
 };
 
 export type SiteConfig = typeof siteConfig;

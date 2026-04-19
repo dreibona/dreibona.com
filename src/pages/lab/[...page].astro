@@ -1,51 +1,28 @@
 ---
 /* Paginated list of all published blog posts in the Lab section */
 import Layout from '@layouts/Layout.astro';
-import PostCard from '@components/PostCard.astro';
-import Pagination from '@components/Pagination.astro';
-import { getPublishedPosts } from '@/utils/posts';
+import PostList from '@components/PostList.astro';
+import { getLabStaticPaths } from '@/utils/routes';
 import type { Page } from 'astro';
-import type { Post } from '@/utils/posts';
+import type { PostEntry } from '@/utils/routes';
 
-/* Generates paginated routes for the blog list */
-export async function getStaticPaths({ paginate }: any) {
-  const posts = await getPublishedPosts();
-  return paginate(posts, { pageSize: 10 });
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+  return await getLabStaticPaths(paginate);
 }
 
 interface Props {
-  page: Page<Post>;
+  page: Page<PostEntry>;
 }
 
 const { page } = Astro.props;
 ---
 
 <Layout>
-  <h1>Lab</h1>
-
-  <ul class='post-list' role='list'>
-    {
-      page.data.map((post) => (
-        <li>
-          <PostCard post={post} />
-        </li>
-      ))
-    }
-  </ul>
-
-  <Pagination currentPage={page.currentPage} totalPages={page.lastPage} baseUrl='/lab' />
+  <PostList
+    title='Lab'
+    posts={page.data}
+    currentPage={page.currentPage}
+    totalPages={page.lastPage}
+    baseUrl='/lab'
+  />
 </Layout>
-
-<style>
-  h1 {
-    margin-block-end: var(--space-lg);
-  }
-
-  .post-list {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
-  }
-</style>

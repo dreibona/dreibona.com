@@ -1,21 +1,23 @@
 ---
-/* Main site layout including SEO, navigation, and footer */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Main site layout including SEO, navigation, and footer                      */
+/* Provides base HTML structure with grid layout (header, main, footer)        */
+/* Handles font loading, SEO metadata, and structured data generation          */
+/* ─────────────────────────────────────────────────────────────────────────── */
 import { Font } from 'astro:assets';
 import '@styles/global.css';
 import Nav from '@components/Nav.astro';
 import Footer from '@components/Footer.astro';
 import SEO from '@components/SEO.astro';
-import Limiter from '@components/Limiter.astro';
 import { siteConfig } from '@config/site';
 import { getMeta, getSchema } from '@config/seo';
 import type { PostMeta } from '@config/seo';
 
 interface Props {
   meta?: PostMeta;
-  nav?: typeof siteConfig.nav;
 }
 
-const { meta: pageMeta, nav = siteConfig.nav } = Astro.props;
+const { meta: pageMeta } = Astro.props;
 
 /* Compute SEO metadata and structured data based on page props */
 const headMeta = getMeta(pageMeta, Astro.url);
@@ -34,17 +36,19 @@ const schemaMarkup = getSchema(headMeta);
     <a href='#main-content' class='skip-link'>Skip to content</a>
 
     <header data-nosnippet>
-      <Nav nav={nav} />
+      <Nav home={siteConfig.nav.home} links={siteConfig.nav.links} />
     </header>
 
     <main id='main-content'>
-      <Limiter><slot /></Limiter>
+      <div class='limiter'>
+        <slot />
+      </div>
     </main>
 
     <footer data-nosnippet>
-      <Limiter>
+      <div class='limiter'>
         <Footer author={headMeta.author} year={new Date().getFullYear()} />
-      </Limiter>
+      </div>
     </footer>
   </body>
 </html>

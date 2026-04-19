@@ -1,47 +1,50 @@
-/* Generates a plain-text representation of the site for LLM context */
-import type { APIRoute } from 'astro';
-import { getVisiblePosts } from '@/utils/posts';
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* LLMs.txt Page Generator                                                     */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
+import { getCollection } from 'astro:content';
+import { byDateDesc } from '@/utils/routes';
+import { getPostAbsoluteUrl } from '@/utils/postUrls';
 import { siteConfig } from '@config/site';
+import type { CollectionEntry } from 'astro:content';
 
-export const GET: APIRoute = async () => {
-  const posts = await getVisiblePosts();
+/* Generates the llms.txt response containing site information and latest posts */
+export async function GET() {
+  /* Fetch all posts from the content collection */
+  const posts = await getCollection('posts');
 
-  /* Resolve navigation labels and paths for the Lab section */
-  const labNav = siteConfig.nav.links.find((n) => n.href.includes('/lab'));
-  const labLabel = labNav?.label ?? 'Lab';
-  const labPath = labNav?.href.replace(/\/$/, '') ?? '/lab';
+  /* Sort posts by publish date in descending order (newest first) */
+  const sortedPosts = posts.sort(byDateDesc as any);
 
-  /* Assemble the content using a markdown-like structure */
+  /* Initialize content with site title and description */
   let content = `# ${siteConfig.title}\n\n`;
-  content += `> ${siteConfig.description}\n\n`;
-  content += `Author: ${siteConfig.author}\n`;
-  content += `URL: ${siteConfig.url}\n\n`;
+  content += `${siteConfig.description}\n\n`;
 
-  content += `## Navegação\n\n`;
+  /* Build Latest Posts section with link to lab and 5 most recent posts */
+  const labNav = siteConfig.nav.links.find((n) => n.href.includes('/lab'));
+  if (labNav) {
+    content += `## Latest Posts\n\n`;
+    content += `- [${labNav.label}](${siteConfig.url}${labNav.href})\n\n`;
+
+    /* Add the 5 most recent posts as links */
+    sortedPosts.slice(0, 5).forEach((post: CollectionEntry<'posts'>) => {
+      content += `- [${post.data.title}](${getPostAbsoluteUrl(post.id, siteConfig.url)})\n`;
+    });
+
+    content += '\n';
+  }
+
+  /* Build Navigation section with home and all navigation links */
+  content += `## Navigation\n\n`;
   content += `- [${siteConfig.nav.home.label}](${siteConfig.url}${siteConfig.nav.home.href})\n`;
   siteConfig.nav.links.forEach((item) => {
     content += `- [${item.label}](${siteConfig.url}${item.href})\n`;
   });
 
-  content += `\n## ${labLabel}\n\n`;
-
-  /* Include a list of all visible posts with their corresponding links */
-  if (posts.length > 0) {
-    posts.forEach((post) => {
-      const desc = post.data.description ? ` - ${post.data.description}` : '';
-      content += `- [${post.data.title}](${siteConfig.url}${labPath}/${post.id}/)${desc}\n`;
-    });
-  } else {
-    content += `Nenhum artigo publicado ainda.\n`;
-  }
-
-  content += `\n---\n`;
-  content += `Note to AI Agents: This file provides context for ${siteConfig.name}.\n`;
-
+  /* Return plain text response with proper content-type header */
   return new Response(content, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600',
     },
   });
-};
+}

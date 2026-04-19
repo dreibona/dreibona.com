@@ -1,18 +1,14 @@
 ---
 /* Individual blog post page renderer */
-import PostLayout from '@layouts/PostLayout.astro';
+import Layout from '@layouts/Layout.astro';
+import Post from '@components/Post.astro';
 import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import { getReadingTime } from '@/utils/readingTime';
-import { getPublishedPosts } from '@/utils/posts';
+import { getPostDetailStaticPaths } from '@/utils/routes';
 
 export async function getStaticPaths() {
-  /* Generates static routes for every published post */
-  const posts = await getPublishedPosts();
-  return posts.map((entry) => ({
-    params: { id: entry.id },
-    props: { entry },
-  }));
+  return await getPostDetailStaticPaths();
 }
 
 interface Props {
@@ -20,11 +16,12 @@ interface Props {
 }
 
 const { entry } = Astro.props;
-/* Renders markdown content and calculates estimated reading time */
 const { Content } = await render(entry);
 const readingTime = getReadingTime(entry.body ?? '');
 ---
 
-<PostLayout meta={entry.data} readingTime={readingTime}>
-  <Content />
-</PostLayout>
+<Layout meta={entry.data}>
+  <Post meta={entry.data} readingTime={readingTime} variant='detail'>
+    <Content />
+  </Post>
+</Layout>

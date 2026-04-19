@@ -1,27 +1,26 @@
 ---
-/* Main navigation component for the site header */
-import type { SiteConfig } from '@config/site';
-import Limiter from '@components/Limiter.astro';
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Main navigation component for the site header                               */
+/* Displays home link and navigation menu with active page indicator           */
+/* ─────────────────────────────────────────────────────────────────────────── */
+import type { NavItem } from '@config/site';
 
 interface Props {
-  nav: SiteConfig['nav'];
+  home: NavItem;
+  links: NavItem[];
 }
 
-const { nav } = Astro.props;
-const { home, links } = nav;
+const { home, links } = Astro.props;
 const path = Astro.url.pathname;
 ---
 
 <nav>
-  <Limiter>
+  <div class='limiter'>
     <div class='nav-container'>
-      <span>
-        <a href={home.href} aria-label='Home'>{home.label}</a>
-      </span>
-      <ul role='list'>
+      <a href={home.href} class='nav-home' aria-label='Home'>{home.label}</a>
+      <ul role='list' class='nav-links'>
         {
           links.map(({ label, href }) => {
-            /* Highlighting the current page in the navigation menu */
             const isActive = path === href;
             return (
               <li>
@@ -38,51 +37,5 @@ const path = Astro.url.pathname;
         }
       </ul>
     </div>
-  </Limiter>
+  </div>
 </nav>
-
-<style>
-  .nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-  }
-
-  span {
-    display: flex;
-
-    & a {
-      display: flex;
-      align-items: center;
-      min-block-size: var(--space-lg);
-      padding-block: var(--space-sm);
-      font-weight: 700;
-    }
-  }
-
-  ul {
-    display: flex;
-    align-items: stretch;
-
-    & li {
-      display: flex;
-    }
-  }
-
-  .nav-link {
-    display: flex;
-    align-items: center;
-    min-block-size: var(--space-lg);
-    padding-inline: var(--space-md);
-    padding-block: var(--space-sm);
-    font-size: var(--text-sm);
-    font-weight: 700;
-    transition: background-color var(--transition-fast);
-
-    &:hover,
-    &.active {
-      background-color: var(--color-black);
-      color: var(--color-white);
-    }
-  }
-</style>

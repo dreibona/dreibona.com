@@ -1,4 +1,7 @@
-/* Dynamic robots.txt generation */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Dynamic robots.txt Generation                                               */
+/* ─────────────────────────────────────────────────────────────────────────── */
+
 import type { APIRoute } from 'astro';
 import { siteConfig } from '@config/site';
 

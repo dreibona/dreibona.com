@@ -1,0 +1,80 @@
+---
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Unified component for displaying posts in both list and detail views        */
+/* Variant 'list': Card with title, description, date, tags, and image         */
+/* Variant 'detail': Full article with header, author, reading time, and slot  */
+/* ─────────────────────────────────────────────────────────────────────────── */
+import { Image } from 'astro:assets';
+import { formatDate } from '@/utils/date';
+import { getPostUrl } from '@/utils/postUrls';
+import type { PostEntry } from '@/utils/routes';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post?: PostEntry;
+  meta?: CollectionEntry<'posts'>['data'];
+  readingTime?: string;
+  variant?: 'list' | 'detail';
+}
+
+const { post, meta, readingTime, variant = 'list' } = Astro.props;
+
+/* Use provided data or extract from post */
+const data = meta || post?.data;
+const postId = post?.id;
+const isDetail = variant === 'detail';
+const { title, description, publishDate, image, imageAlt, tags, author } = data || {};
+---
+
+<article class='prose'>
+  {isDetail ? (
+    <header>
+      <h1>{title}</h1>
+      <p>
+        {author} &mdash;
+        <time datetime={publishDate?.toISOString()}>{formatDate(publishDate)}</time>
+        {readingTime && <span> &mdash; {readingTime}</span>}
+      </p>
+
+      {
+        tags?.length > 0 && (
+          <ul role='list' aria-label='Post tags'>
+            {tags.map((tag: string) => (
+              <li>
+                <a class='tag' href={`/lab/tags/${tag}/`}>
+                  #{tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      {image && <Image src={image} alt={imageAlt ?? title} />}
+    </header>
+    <slot />
+  ) : (
+    <>
+      <a href={getPostUrl(postId)}>
+        <h2>{title}</h2>
+      </a>
+      {description && <p>{description}</p>}
+      <time datetime={publishDate?.toISOString()}>{formatDate(publishDate)}</time>
+      {
+        tags?.length > 0 && (
+          <ul role='list'>
+            {tags.map((tag: string) => (
+              <li>
+                <a class='tag' href={`/lab/tags/${tag}/`}>
+                  #{tag}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      {image && <Image src={image} alt={imageAlt ?? title} />}
+    </>
+  )}
+</article>

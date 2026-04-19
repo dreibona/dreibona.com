@@ -1,5 +1,8 @@
 ---
-/* Component for injecting SEO metadata and structured data into the head */
+/* ─────────────────────────────────────────────────────────────────────────── */
+/* Component for injecting SEO metadata and structured data into the head      */
+/* Renders meta tags for Open Graph, Twitter, and JSON-LD schema markup        */
+/* ─────────────────────────────────────────────────────────────────────────── */
 import { siteConfig } from '@config/site';
 
 interface Props {
@@ -46,32 +49,37 @@ const {
 <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
 <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
 
-<meta property='og:type' content={type} />
-<meta property='og:url' content={currentUrl} />
-<meta property='og:title' content={pageTitle} />
-<meta property='og:description' content={description} />
-<meta property='og:image' content={new URL(image.url, baseSite)} />
-<meta property='og:image:alt' content={image.alt} />
-<meta property='og:image:width' content='1200' />
-<meta property='og:image:height' content='630' />
-<meta property='og:site_name' content={siteConfig.name} />
-<meta property='og:locale' content={loc} />
-
 {
-  type === 'article' && publishDate && (
-    <meta property='article:published_time' content={publishDate} />
-  )
-}
-{
-  type === 'article' && modifiedDate && (
-    <meta property='article:modified_time' content={modifiedDate} />
-  )
-}
+  (() => {
+    const imageUrl = new URL(image.url, baseSite).toString();
+    return (
+      <>
+        <meta property='og:type' content={type} />
+        <meta property='og:url' content={currentUrl} />
+        <meta property='og:title' content={pageTitle} />
+        <meta property='og:description' content={description} />
+        <meta property='og:image' content={imageUrl} />
+        <meta property='og:image:alt' content={image.alt} />
+        <meta property='og:image:width' content='1200' />
+        <meta property='og:image:height' content='630' />
+        <meta property='og:site_name' content={siteConfig.name} />
+        <meta property='og:locale' content={loc} />
 
-<meta name='twitter:card' content='summary_large_image' />
-<meta name='twitter:title' content={pageTitle} />
-<meta name='twitter:description' content={description} />
-<meta name='twitter:image' content={new URL(image.url, baseSite)} />
-<meta name='twitter:image:alt' content={image.alt} />
+        {type === 'article' && publishDate && (
+          <meta property='article:published_time' content={publishDate} />
+        )}
+        {type === 'article' && modifiedDate && (
+          <meta property='article:modified_time' content={modifiedDate} />
+        )}
+
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta name='twitter:title' content={pageTitle} />
+        <meta name='twitter:description' content={description} />
+        <meta name='twitter:image' content={imageUrl} />
+        <meta name='twitter:image:alt' content={image.alt} />
+      </>
+    );
+  })()
+}
 
 <script is:inline type='application/ld+json' set:html={schemaMarkup} />

@@ -1,55 +1,19 @@
-/* Global stylesheet defining design tokens, resets, and base layout styles */
+/* ─────────────────────────────────────────────────────────────────── */
+/* Global stylesheet defining design tokens, resets, and base layout   */
+/* ─────────────────────────────────────────────────────────────────── */
 @layer tokens, reset, base, layout, utilities;
 
-/* Design Tokens */
-@layer tokens {
-  @property --color-black {
-    syntax: '<color>';
-    inherits: true;
-    initial-value: oklch(10% 0 0);
-  }
-
-  :root {
-    /* Typography — fluid scale based on viewport width */
-    --text-sm: clamp(0.8rem, 0.2vw + 0.8rem, 0.9rem);
-    --text-base: clamp(1rem, 0.5vw + 1rem, 1.125rem);
-    --text-md: clamp(1rem, 1.5vw + 1rem, 1.5rem);
-    --text-lg: clamp(1.5rem, 3vw + 1rem, 2.25rem);
-    --text-xl: clamp(2rem, 5vw + 1rem, 3.25rem);
-
-    /* Spacing — fluid scale for consistent rhythm */
-    --space-xs: clamp(0.25rem, 0.5vw, 0.5rem);
-    --space-sm: clamp(0.5rem, 1vw, 0.75rem);
-    --space-md: clamp(1rem, 2vw, 1.5rem);
-    --space-lg: clamp(2rem, 4vw, 3rem);
-    --space-xl: clamp(4rem, 8vw, 6rem);
-
-    /* Color Palette — using OKLCH for better color space control */
-    --color-white: oklch(98% 0 0);
-    --color-primary: oklch(55% 0 0);
-
-    /* Border widths */
-    --border-sm: clamp(2px, 0.3vw, 3px);
-    --border-md: clamp(4px, 1vw, 10px);
-
-    /* Transition speeds */
-    --transition-fast: 150ms ease;
-    --transition-base: 250ms ease;
-
-    /* Content width limit */
-    --max-width: 65ch;
-
-    /* System UI color scheme compatibility */
-    color-scheme: light dark;
-  }
-}
+/* Import theme tokens from separate file */
+@import 'theme.css';
 
 /* Native Navigation Transitions */
 @view-transition {
   navigation: auto;
 }
 
-/* CSS Reset */
+/* ─────────────────────────────────────────────────────────────────── */
+/* CSS Reset                                                           */
+/* ─────────────────────────────────────────────────────────────────── */
 @layer reset {
   *,
   *::before,
@@ -59,13 +23,11 @@
     padding: 0;
   }
 
-  /* Fixes text sizing issues on mobile devices */
   html {
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
   }
 
-  /* Responsive media elements */
   img,
   picture,
   video,
@@ -92,12 +54,14 @@
   }
 }
 
-/* Base Element Styles */
+/* ─────────────────────────────────────────────────────────────────── */
+/* Base Element Styles                                                 */
+/* ─────────────────────────────────────────────────────────────────── */
 @layer base {
   html {
     font-family: var(--font-sans);
     font-size: var(--text-base);
-    line-height: 1.7;
+    line-height: var(--line-height-normal);
     block-size: 100%;
     tab-size: 2;
   }
@@ -108,29 +72,31 @@
     grid-template-rows: auto 1fr auto;
     color: var(--color-black);
     background-color: var(--color-white);
-    font-weight: 400;
+    font-weight: var(--font-weight-normal);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Typographic hierarchy */
   :is(h1, h2, h3, h4, h5, h6) {
     text-wrap: balance;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
 
   h1 {
     font-size: var(--text-xl);
-    line-height: 1.1;
+    line-height: var(--line-height-tight);
   }
+
   h2 {
     font-size: var(--text-lg);
     line-height: 1.2;
   }
+
   h3 {
     font-size: var(--text-md);
     line-height: 1.3;
   }
+
   :is(h4, h5, h6) {
     font-size: var(--text-base);
     line-height: 1.4;
@@ -138,7 +104,7 @@
 
   p {
     text-wrap: pretty;
-    line-height: 1.6;
+    line-height: var(--line-height-normal);
   }
 
   a {
@@ -147,12 +113,8 @@
   }
 
   label {
-    line-height: 1.1;
+    line-height: var(--line-height-tight);
     cursor: pointer;
-  }
-
-  :is(ul, ol) {
-    padding-inline-start: var(--space-md);
   }
 
   :is(code, kbd, samp) {
@@ -163,10 +125,10 @@
   pre {
     overflow-x: auto;
     tab-size: 2;
+  }
 
-    & code {
-      font-size: inherit;
-    }
+  pre code {
+    font-size: inherit;
   }
 
   hr {
@@ -185,15 +147,30 @@
   }
 }
 
-/* Layout Specific Styles */
+/* ─────────────────────────────────────────────────────────────────── */
+/* Layout Specific Styles                                              */
+/* ─────────────────────────────────────────────────────────────────── */
 @layer layout {
-  nav,
+  nav {
+    background-color: var(--color-primary);
+    padding-block: 0;
+    padding-inline: var(--space-sm);
+  }
+
+  main {
+    padding-block: var(--space-lg);
+    padding-inline: var(--space-sm);
+  }
+
   footer {
     background-color: var(--color-primary);
+    padding-block: var(--space-md);
   }
 }
 
-/* Utility Classes */
+/* ─────────────────────────────────────────────────────────────────── */
+/* Utility Classes                                                     */
+/* ─────────────────────────────────────────────────────────────────── */
 @layer utilities {
   /* Accessibility skip link for keyboard navigation */
   .skip-link {
@@ -204,28 +181,37 @@
     color: var(--color-white);
     padding: var(--space-xs) var(--space-md);
     z-index: 999;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
     opacity: 0;
-
-    &:focus {
-      inset-block-start: var(--space-md);
-      opacity: 1;
-    }
   }
 
-  /* Prose class to manage spacing and typography for Markdown content */
+  .skip-link:focus {
+    inset-block-start: var(--space-md);
+    opacity: 1;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Prose - Content Styling                                             */
+  /* Used in: PostDetail.astro, [...page].astro, [tag]/[...page].astro,  */
+  /*          404.astro (Main content typography and spacing)            */
+  /* ─────────────────────────────────────────────────────────────────── */
   .prose {
+    display: flex;
+    flex-direction: column;
+
     & > * + * {
       margin-block-start: var(--space-md);
     }
 
-    & > :is(h1, h2, h3) {
-      & + * {
-        margin-block-start: var(--space-sm);
-      }
+    & h1 {
+      margin-block-end: var(--space-sm);
     }
 
-    & > * + :is(h1, h2, h3) {
+    & > :is(h2, h3) + * {
+      margin-block-start: var(--space-sm);
+    }
+
+    & > * + :is(h2, h3) {
       margin-block-start: var(--space-lg);
     }
 
@@ -233,17 +219,27 @@
       & > li + li {
         margin-block-start: var(--space-xs);
       }
+
+      & li:not(:has(> .tag)) {
+        padding-inline-start: var(--space-sm);
+      }
     }
 
     & > pre {
       padding: var(--space-md);
+      background-color: var(--color-secondary);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
     }
 
     & > blockquote {
       padding-inline-start: var(--space-md);
+      padding-block: var(--space-sm);
       border-inline-start: var(--border-sm) solid var(--color-primary);
       font-style: italic;
       opacity: 0.8;
+      background-color: oklch(98% 0 0 / 0.5);
+      border-radius: var(--radius-md);
     }
 
     & > hr {
@@ -259,13 +255,173 @@
       display: flex;
       flex-direction: column;
       gap: var(--space-xs);
+
+      & figcaption {
+        font-family: var(--font-mono);
+        font-size: var(--text-sm);
+        text-align: center;
+        opacity: 0.7;
+      }
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Tag Styling                                                         */
+  /* Used in: PostDetail.astro, PostCard.astro, [tag]/[...page].astro    */
+  /* ─────────────────────────────────────────────────────────────────── */
+  .tag {
+    font-size: var(--text-sm);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    color: var(--color-primary);
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.7;
+      text-decoration: underline;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Back Link Button                                                    */
+  /* Used in: 404.astro, [tag]/[...page].astro                           */
+  /* ─────────────────────────────────────────────────────────────────── */
+  .back-link {
+    display: inline-block;
+    max-width: max-content;
+    padding-inline: var(--space-md);
+    padding-block: var(--space-sm);
+    background-color: var(--color-black);
+    color: var(--color-white);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-sm);
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Post List                                                           */
+  /* Used in: [...page].astro (Lab), [tag]/[...page].astro               */
+  /* ─────────────────────────────────────────────────────────────────── */
+  .post-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Limiter - Content Width Constraint                                  */
+  /* Used in: Nav.astro, Layout.astro (main and footer)                  */
+  /* ─────────────────────────────────────────────────────────────────── */
+  .limiter {
+    max-inline-size: 65ch;
+    margin-inline: auto;
+    padding-inline: var(--space-md);
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Navigation Container                                                */
+  /* Used in: Nav.astro (Main site header navigation)                    */
+  /* Contains: nav-home, nav-links, nav-link                             */
+  /* ─────────────────────────────────────────────────────────────────── */
+  .nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-block-size: var(--space-lg);
+  }
+
+  .nav-home {
+    display: flex;
+    align-items: center;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    padding-block: var(--space-sm);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+
+    & li {
+      display: flex;
+    }
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    padding-inline: var(--space-md);
+    padding-block: var(--space-sm);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-bold);
+    transition: background-color var(--transition-fast);
+
+    &:hover,
+    &.active {
+      background-color: var(--color-black);
+      color: var(--color-white);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Pagination Navigation                                               */
+  /* Used in: Pagination.astro (Post list pagination)                    */
+  /* ─────────────────────────────────────────────────────────────────── */
+  nav.pagination {
+    margin-block: var(--space-xl);
+    display: flex;
+    justify-content: center;
+    background-color: inherit;
+
+    & ul {
+      display: flex;
+      gap: var(--space-xs);
+      align-items: center;
     }
 
-    & figcaption {
+    & a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-inline-size: calc(var(--space-lg) / 1.2);
+      min-block-size: calc(var(--space-lg) / 1.2);
       font-family: var(--font-mono);
       font-size: var(--text-sm);
-      text-align: center;
-      opacity: 0.7;
+      font-weight: var(--font-weight-bold);
+      transition:
+        background-color var(--transition-fast),
+        color var(--transition-fast);
+
+      &:hover:not(.disabled, .active) {
+        background-color: var(--color-primary);
+      }
+
+      &.active {
+        background-color: var(--color-black);
+        color: var(--color-white);
+        cursor: default;
+        pointer-events: none;
+      }
+
+      &.disabled {
+        opacity: 0.2;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
     }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────── */
+  /* Error Page Subtitle                                                 */
+  /* Used in: pages/404.astro                                            */
+  /* ─────────────────────────────────────────────────────────────────── */
+  .error-subtitle {
+    font-size: var(--text-md);
+    font-weight: 700;
   }
 }

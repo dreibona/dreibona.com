@@ -1,18 +1,11 @@
----
 /* ─────────────────────────────────────────────────────────────────────────── */
-/* Site footer component                                                       */
-/* Displays copyright information with author name and current year            */
+/* Utility functions for building post URLs consistently across the site       */
+/* Centralizes post URL construction to ensure consistency and ease updates    */
 /* ─────────────────────────────────────────────────────────────────────────── */
-interface Props {
-  author: string;
-  year: number;
-}
 
-const { author, year } = Astro.props;
----
+/* Builds the relative URL path for a post */
+export const getPostUrl = (postId: string): string => `/lab/${postId}/`;
 
-<p>
-  design & code by <a href='/'>
-    {author} © {year}
-  </a>
-</p>
+/* Builds the absolute URL for a post */
+export const getPostAbsoluteUrl = (postId: string, baseUrl: string): string =>
+  new URL(getPostUrl(postId), baseUrl).href;
