@@ -29,6 +29,8 @@ const ui = {
     'tag.metaDescription.prefix': 'All articles tagged with',
     'tag.page': 'Page',
     'pagination.page': 'Page',
+    'nav.homeLabel': 'Home',
+    'pagination.label': 'Pagination',
   },
   'es-ES': {
     'nav.home': 'db',
@@ -54,6 +56,8 @@ const ui = {
     'tag.metaDescription.prefix': 'Todos los artículos con etiqueta',
     'tag.page': 'Página',
     'pagination.page': 'Página',
+    'nav.homeLabel': 'Inicio',
+    'pagination.label': 'Paginación',
   },
   'pt-BR': {
     'nav.home': 'db',
@@ -79,6 +83,8 @@ const ui = {
     'tag.metaDescription.prefix': 'Todos os artigos com etiqueta',
     'tag.page': 'Página',
     'pagination.page': 'Página',
+    'nav.homeLabel': 'Início',
+    'pagination.label': 'Paginação',
   },
 } as const;
 

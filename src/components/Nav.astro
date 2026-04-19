@@ -8,6 +8,7 @@ import type { NavItem } from '@/i18n/nav';
 import type { Locale } from '@/i18n/locales';
 import { LOCALES, LOCALE_LABELS, LOCALE_PATHS } from '@/i18n/locales';
 import { getLocalizedPageUrl, getCanonicalPath } from '@/i18n/utils';
+import { useTranslations } from '@/i18n/translations';
 
 interface Props {
   home: NavItem;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 const { home, links, locale } = Astro.props;
+const t = useTranslations(locale);
 const path = Astro.url.pathname;
 
 /* Current path without locale prefix, used to build language switcher URLs */
@@ -25,7 +27,11 @@ const basePath = getCanonicalPath(path);
 <nav>
   <div class='limiter'>
     <div class='nav-container'>
-      <a href={getLocalizedPageUrl(home.href, locale)} class='nav-home' aria-label='Home'>
+      <a
+        href={getLocalizedPageUrl(home.href, locale)}
+        class='nav-home'
+        aria-label={t('nav.homeLabel')}
+      >
         {home.label}
       </a>
       <ul role='list' class='nav-links'>

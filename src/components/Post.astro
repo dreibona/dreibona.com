@@ -54,7 +54,7 @@ const { title, description, publishDate, image, imageAlt, tags, author } = data 
         )
       }
 
-      {image && <Image src={image} alt={imageAlt ?? title} />}
+      {image && <Image src={image} alt={imageAlt ?? title} fetchpriority='high' loading='eager' />}
     </header>
     <slot />
   ) : (

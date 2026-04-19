@@ -14,7 +14,7 @@ export async function GET() {
   const enPosts = await getPublishedPosts('en');
 
   /* Initialize content with site title and description */
-  let content = `# ${siteConfig.title}\n\n`;
+  let content = `# ${siteConfig.name}\n\n`;
   content += `${siteConfig.description}\n\n`;
 
   /* Build Latest Posts section with link to lab and 5 most recent posts */

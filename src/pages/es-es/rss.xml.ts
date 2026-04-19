@@ -12,7 +12,7 @@ export async function GET(context: APIContext) {
   const posts = await getPublishedPosts('es-ES');
 
   return rss({
-    title: siteConfig.title,
+    title: siteConfig.name,
     description: siteConfig.description,
     site: context.site!,
     items: posts.map((p) => toRSSItem(p, 'es-ES')),

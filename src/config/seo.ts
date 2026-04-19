@@ -77,9 +77,9 @@ export const getMeta = (pageMeta: PostMeta = {}, url: URL, locale: Locale = 'en'
       ? pageMeta.image
       : (pageMeta.image?.src ?? siteConfig.defaultImage);
 
-  const title = pageMeta.title ?? siteConfig.title;
+  const title = pageMeta.title ?? siteConfig.name;
   const type = pageMeta.type ?? 'website';
-  const pageTitle = buildPageTitle(pageMeta.title, pathname, siteConfig.name, siteConfig.title);
+  const pageTitle = buildPageTitle(pageMeta.title, pathname, siteConfig.name, siteConfig.name);
 
   return {
     title,

@@ -5,7 +5,6 @@
 export const siteConfig = {
   /* Brand and ownership information */
   name: 'dreibona',
-  title: 'dreibona',
   description: 'dreibona.',
   author: 'dreibona',
 

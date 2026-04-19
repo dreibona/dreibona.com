@@ -27,13 +27,8 @@ export async function getPublishedPosts(locale: Locale): Promise<PostEntry[]> {
 /* Filters out drafts and posts specifically hidden from robots                */
 /* ─────────────────────────────────────────────────────────────────────────── */
 export async function getVisiblePosts(locale: Locale): Promise<PostEntry[]> {
-  const posts = await getCollection('posts');
-  return posts
-    .filter(
-      (p: PostEntry) =>
-        !p.data.draft && p.data.robot !== false && extractLocaleFromId(p.id) === locale,
-    )
-    .sort(byDateDesc);
+  const posts = await getPublishedPosts(locale);
+  return posts.filter((p) => p.data.robot !== false);
 }
 
 /* Returns all visible posts associated with a given tag for the given locale */

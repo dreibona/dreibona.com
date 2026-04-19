@@ -56,7 +56,8 @@ const imageUrl = new URL(image.url, baseSite).toString();
 <title>{pageTitle}</title>
 
 <meta name='color-scheme' content='light dark' />
-<meta name='theme-color' content='#ffffff' />
+<meta name='theme-color' content='#ffffff' media='(prefers-color-scheme: light)' />
+<meta name='theme-color' content='#111111' media='(prefers-color-scheme: dark)' />
 
 <meta name='description' content={description} />
 <meta name='author' content={author} />
@@ -66,7 +67,7 @@ const imageUrl = new URL(image.url, baseSite).toString();
 {alternates.map(({ locale: l, href }) => <link rel='alternate' hreflang={l} href={href} />)}
 <link rel='alternate' hreflang='x-default' href={xDefaultHref} />
 
-<link rel='alternate' type='application/rss+xml' title={siteConfig.title} href={rssHref} />
+<link rel='alternate' type='application/rss+xml' title={siteConfig.name} href={rssHref} />
 <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
 <link rel='apple-touch-icon' href='/apple-touch-icon.png' />
 
